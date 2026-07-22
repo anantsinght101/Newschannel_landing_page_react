@@ -1,0 +1,353 @@
+import { useState, useEffect } from "react";
+import { supabase } from "../lib/supabaseClient";
+
+/**
+ * UploadNewsModal - Modal for creating new news articles
+ *
+ * NOTE: Since there is only ever one admin account, RLS policies treat
+ * "any authenticated user" as "the admin" for now — an admins table or role
+ * system is unnecessary for a single fixed account.
+ */
+export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
+  const [headline, setHeadline] = useState("");
+  const [categoryId, setCategoryId] = useState("");
+  const [content, setContent] = useState("");
+  const [files, setFiles] = useState([]);
+
+  const [categories, setCategories] = useState([]);
+  const [loadingCategories, setLoadingCategories] = useState(false);
+  const [categoryError, setCategoryError] = useState("");
+
+  const [validationError, setValidationError] = useState("");
+  const [submitError, setSubmitError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  // Load categories from Supabase on mount or when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      fetchCategories();
+    }
+  }, [isOpen]);
+
+  const fetchCategories = async () => {
+    setLoadingCategories(true);
+    setCategoryError("");
+    try {
+      const { data, error } = await supabase
+        .from("categories")
+        .select("id, name, slug")
+        .order("name", { ascending: true });
+
+      if (error) {
+        console.error("Error fetching categories:", error);
+        setCategoryError("श्रेणी लोड करताना त्रुटी आली. (Failed to load categories)");
+      } else {
+        setCategories(data || []);
+      }
+    } catch (err) {
+      console.error("Error fetching categories:", err);
+      setCategoryError("श्रेणी लोड करता आली नाही.");
+    } finally {
+      setLoadingCategories(false);
+    }
+  };
+
+  const MAX_FILES = 5;
+  const MAX_FILE_SIZE_MB = 25;
+  const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+
+  const handleFileChange = (e) => {
+    const selectedFiles = Array.from(e.target.files || []);
+    setValidationError("");
+
+    if (selectedFiles.length > MAX_FILES) {
+      setValidationError(`तुम्ही ५ पेक्षा जास्त फायली निवडू शकत नाही. (Maximum ${MAX_FILES} files allowed)`);
+      return;
+    }
+
+    for (const file of selectedFiles) {
+      if (file.size > MAX_FILE_SIZE_BYTES) {
+        setValidationError(
+          `फाईल "${file.name}" खूप मोठी आहे (${(file.size / (1024 * 1024)).toFixed(1)}MB). कमाल मर्यादा ${MAX_FILE_SIZE_MB}MB आहे.`
+        );
+        return;
+      }
+    }
+
+    setFiles(selectedFiles);
+  };
+
+  const handleClose = () => {
+    if (isSubmitting) return;
+    resetForm();
+    onClose();
+  };
+
+  const resetForm = () => {
+    setHeadline("");
+    setCategoryId("");
+    setContent("");
+    setFiles([]);
+    setValidationError("");
+    setSubmitError("");
+    setSuccessMessage("");
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setValidationError("");
+    setSubmitError("");
+    setSuccessMessage("");
+
+    // Client-side validations
+    if (!headline.trim()) {
+      setValidationError("कृपया बातमीचे शीर्षक प्रविष्ट करा. (Headline is required)");
+      return;
+    }
+
+    if (!categoryId) {
+      setValidationError("कृपया विभाग / श्रेणी निवडा. (Category selection is required)");
+      return;
+    }
+
+    if (!content.trim()) {
+      setValidationError("कृपया बातमीचा संपूर्ण मजकूर लिहा. (Article content is required)");
+      return;
+    }
+
+    if (files.length > MAX_FILES) {
+      setValidationError(`जास्तीत जास्त ५ फायली निवडा. (${files.length} selected)`);
+      return;
+    }
+
+    for (const file of files) {
+      if (file.size > MAX_FILE_SIZE_BYTES) {
+        setValidationError(
+          `फाईल "${file.name}" 25MB पेक्षा मोठी आहे. कृपया लहान साईजची लाईल निवडा.`
+        );
+        return;
+      }
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const mediaUrls = [];
+
+      // 1. Upload each file to temporary Supabase Storage bucket
+      if (files.length > 0) {
+        for (const file of files) {
+          const fileExt = file.name.split(".").pop();
+          const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
+          const filePath = `uploads/${fileName}`;
+
+          // TEMPORARY: replace with Cloudflare R2 presigned upload in step 2
+          const { error: uploadError } = await supabase.storage
+            .from("news-media-temp")
+            .upload(filePath, file, {
+              cacheControl: "3600",
+              upsert: false,
+            });
+
+          if (uploadError) {
+            console.error("Storage upload error:", uploadError);
+            throw new Error(
+              `फाईल "${file.name}" अपलोड करताना त्रुटी आली: ${uploadError.message}`
+            );
+          }
+
+          // TEMPORARY: collect public URL for uploaded file (replace in step 2)
+          const { data: urlData } = supabase.storage
+            .from("news-media-temp")
+            .getPublicUrl(filePath);
+
+          if (urlData?.publicUrl) {
+            mediaUrls.push(urlData.publicUrl);
+          }
+        }
+      }
+
+      // 2. Insert row into articles table
+      const { data: newArticle, error: dbError } = await supabase
+        .from("articles")
+        .insert([
+          {
+            headline: headline.trim(),
+            category_id: categoryId,
+            content: content.trim(),
+            media_urls: mediaUrls,
+            status: "pending",
+          },
+        ])
+        .select()
+        .single();
+
+      if (dbError) {
+        console.error("Database insert error:", dbError);
+        throw new Error(`डेटाबेसमध्ये बातमी नोंदवताना त्रुटी: ${dbError.message}`);
+      }
+
+      setSuccessMessage("बातमी यशस्वीरीत्या सबमिट झाली आहे! (News submitted successfully)");
+      setTimeout(() => {
+        resetForm();
+        if (onSuccess) onSuccess(newArticle);
+        onClose();
+      }, 1500);
+
+    } catch (err) {
+      console.error("Upload/Insert process error:", err);
+      setSubmitError(err.message || "सबमिट करताना अनपेक्षित त्रुटी आली.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="modal-overlay" onClick={handleClose}>
+      <div
+        className="modal-container"
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+      >
+        <div className="modal-header">
+          <h2 id="modal-title" className="modal-title">
+            नवीन बातमी अपलोड करा
+          </h2>
+          <button
+            type="button"
+            className="modal-close-btn"
+            onClick={handleClose}
+            aria-label="Close modal"
+            disabled={isSubmitting}
+          >
+            &times;
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="modal-body">
+          {validationError && (
+            <div className="modal-alert modal-alert--error">{validationError}</div>
+          )}
+
+          {submitError && (
+            <div className="modal-alert modal-alert--error">{submitError}</div>
+          )}
+
+          {successMessage && (
+            <div className="modal-alert modal-alert--success">{successMessage}</div>
+          )}
+
+          {/* Field 1: Headline */}
+          <div className="modal-form-group">
+            <label htmlFor="headline" className="modal-label">
+              बातमीचे शीर्षक (Headline) <span className="required-star">*</span>
+            </label>
+            <input
+              id="headline"
+              type="text"
+              className="modal-input"
+              placeholder="येथे मुख्य बातमीचे शीर्षक लिहा..."
+              value={headline}
+              onChange={(e) => setHeadline(e.target.value)}
+              required
+              disabled={isSubmitting}
+            />
+          </div>
+
+          {/* Field 2: Category Dropdown */}
+          <div className="modal-form-group">
+            <label htmlFor="category" className="modal-label">
+              विभाग / श्रेणी निवडा (Category) <span className="required-star">*</span>
+            </label>
+            <select
+              id="category"
+              className="modal-select"
+              value={categoryId}
+              onChange={(e) => setCategoryId(e.target.value)}
+              required
+              disabled={isSubmitting || loadingCategories}
+            >
+              <option value="">-- विभाग निवडा --</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+            {categoryError && <p className="field-hint error">{categoryError}</p>}
+          </div>
+
+          {/* Field 3: Article Content */}
+          <div className="modal-form-group">
+            <label htmlFor="content" className="modal-label">
+              बातमीचा मजकूर (Article Content) <span className="required-star">*</span>
+            </label>
+            <textarea
+              id="content"
+              className="modal-textarea"
+              rows={6}
+              placeholder="येथे बातमीचा संपूर्ण मजकूर लिहा..."
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              required
+              disabled={isSubmitting}
+            />
+          </div>
+
+          {/* Field 4: File Input */}
+          <div className="modal-form-group">
+            <label htmlFor="media-files" className="modal-label">
+              फोटो / व्हिडिओ अपलोड करा (जास्तीत जास्त ५ फायली)
+            </label>
+            <input
+              id="media-files"
+              type="file"
+              className="modal-file-input"
+              accept="image/*,video/*"
+              multiple
+              onChange={handleFileChange}
+              disabled={isSubmitting}
+            />
+            {/* Field 5: Helper text */}
+            <p className="field-hint">
+              तुम्ही जास्तीत जास्त ५ फोटो किंवा व्हिडिओ निवडून अपलोड करू शकता. (Max 25MB per file)
+            </p>
+            {files.length > 0 && (
+              <ul className="selected-files-list">
+                {files.map((file, idx) => (
+                  <li key={idx}>
+                    {file.name} ({(file.size / (1024 * 1024)).toFixed(2)} MB)
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {/* Field 6: Action Buttons */}
+          <div className="modal-footer">
+            <button
+              type="button"
+              className="modal-btn modal-btn--secondary"
+              onClick={handleClose}
+              disabled={isSubmitting}
+            >
+              रद्द करा
+            </button>
+            <button
+              type="submit"
+              className="modal-btn modal-btn--primary"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "अपलोड व सबमिट होत आहे..." : "बातमी सबमिट करा"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

@@ -18,6 +18,7 @@ export const utilityLinks = [
   { to: "/about", label: { mr: "आमच्याबद्दल", en: "About Us" } },
   { to: "/contact", label: { mr: "संपर्क", en: "Contact" } },
   { to: "/epaper", label: { mr: "ई-पेपर", en: "E-Paper" } },
+  { to: "/admin/login", label: { mr: "अ‍ॅडमिन लॉगिन", en: "Admin Login" } },
 ];
 
 export const topBarSocialLinks = [
