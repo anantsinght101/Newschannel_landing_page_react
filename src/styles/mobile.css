@@ -1,0 +1,677 @@
+/* ==========================================================================
+   Dedicated Mobile Layout Stylesheet
+   Applied exclusively when viewing on Mobile devices (<= 768px)
+   ========================================================================== */
+
+/* Mobile Layout Base Container */
+.mobile-layout {
+  min-height: 100vh;
+  background-color: var(--color-surface);
+  color: var(--color-body);
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-container {
+  width: 100%;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   1. Mobile Navbar (~60px Height, Logo 110-140px, Hamburger Drawer)
+   ========================================================================== */
+.mobile-navbar {
+  background-color: var(--color-navy);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(11, 37, 69, 0.2);
+}
+
+.mobile-navbar__header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  padding: 0 16px;
+}
+
+.mobile-navbar__hamburger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.mobile-navbar__hamburger:active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.mobile-navbar__hamburger img {
+  filter: brightness(0) invert(1);
+}
+
+/* Logo Sizing (Strict 110-140px width requirement) */
+.mobile-navbar__logo-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 140px;
+}
+
+.mobile-navbar__logo-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid var(--color-gold);
+}
+
+.mobile-navbar__brand-name {
+  font-family: var(--font-headline);
+  font-size: 17px;
+  color: #FFFFFF;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+
+.mobile-navbar__right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mobile-navbar__live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--color-red);
+  color: #FFFFFF;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-family: var(--font-nav);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.mobile-navbar__live-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  animation: live-pulse 1.2s infinite ease-in-out;
+}
+
+.mobile-navbar__icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+}
+.mobile-navbar__icon-btn img {
+  filter: brightness(0) invert(1);
+}
+
+/* Search Drawer */
+.mobile-navbar__search-drawer {
+  background: var(--color-navy-dark);
+  padding: 10px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-navbar__search-drawer form {
+  display: flex;
+  gap: 8px;
+}
+
+.mobile-navbar__search-input {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  font-size: 14px;
+}
+
+.mobile-navbar__search-btn {
+  background: var(--color-gold);
+  color: var(--color-ink);
+  border: none;
+  font-family: var(--font-subhead);
+  font-weight: 800;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+/* Full Menu Drawer */
+.mobile-navbar__menu-drawer {
+  background: var(--color-navy-dark);
+  padding: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mobile-navbar__lang-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-navbar__lang-label {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: var(--font-subhead);
+}
+
+.mobile-navbar__lang-toggle {
+  display: flex;
+  gap: 6px;
+}
+
+.mobile-navbar__lang-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
+  padding: 4px 12px;
+  border-radius: 14px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mobile-navbar__lang-btn.active {
+  background: var(--color-gold);
+  color: var(--color-ink);
+  border-color: var(--color-gold);
+}
+
+.mobile-navbar__links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mobile-navbar__link {
+  display: block;
+  padding: 10px 12px;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: var(--font-subhead);
+  font-weight: 700;
+  font-size: 16px;
+  border-radius: 4px;
+}
+
+.mobile-navbar__link.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-gold);
+  border-left: 3px solid var(--color-gold);
+}
+
+.mobile-navbar__utility-section {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 12px;
+}
+
+.mobile-navbar__utility-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 16px;
+}
+
+.mobile-navbar__utility-links a {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* ==========================================================================
+   2. Mobile Breaking Marquee (Height: 38-42px, Font size: 14-15px)
+   ========================================================================== */
+.mobile-ticker-wrapper .ticker {
+  height: 40px;
+}
+
+.mobile-ticker-wrapper .ticker__label {
+  padding: 0 12px;
+  font-size: 12px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.mobile-ticker-wrapper .ticker__item {
+  font-size: 14px;
+  padding: 8px 24px 8px 0;
+}
+
+/* ==========================================================================
+   3. Horizontal Scrollable Category Pills
+   ========================================================================== */
+.mobile-category-scroll {
+  background: var(--color-surface-alt);
+  border-bottom: 1px solid var(--color-border);
+  padding: 10px 0;
+}
+
+.mobile-category-scroll__track {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0 16px;
+  scrollbar-width: none;
+}
+
+.mobile-category-scroll__track::-webkit-scrollbar {
+  display: none;
+}
+
+.mobile-category-pill {
+  flex-shrink: 0;
+  display: inline-block;
+  padding: 6px 14px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  font-family: var(--font-subhead);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-body);
+  white-space: nowrap;
+}
+
+.mobile-category-pill.active {
+  background: var(--color-navy);
+  color: #FFFFFF;
+  border-color: var(--color-navy);
+}
+
+/* ==========================================================================
+   4. Mobile Hero Section (1-Column Stacked, 16:9 Image, Headline 26-30px)
+   ========================================================================== */
+.mobile-hero {
+  padding: 20px 16px 28px;
+  background: var(--color-surface-alt);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.mobile-hero__card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 16:9 Aspect Ratio Landscape Image with Rounded Corners */
+.mobile-hero__image-wrapper {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(11, 37, 69, 0.08);
+}
+
+.mobile-hero__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mobile-hero__content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mobile-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-subhead);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--color-red);
+}
+
+.mobile-hero__live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-red);
+}
+
+/* Headline: 26-30px, max 3 lines clamp */
+.mobile-hero__title {
+  font-family: var(--font-headline);
+  font-size: 26px;
+  line-height: 1.25;
+  color: var(--color-ink);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.mobile-hero__accent-rule {
+  height: 3px;
+  width: 60px;
+  background: linear-gradient(90deg, var(--color-red) 0%, var(--color-gold) 100%);
+  border-radius: 2px;
+}
+
+/* Summary: max 2 lines clamp */
+.mobile-hero__subtitle {
+  font-size: 15px;
+  color: var(--color-body);
+  line-height: 1.5;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Button: Height 44-48px */
+.mobile-hero__btn {
+  height: 44px;
+  background: var(--color-navy);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 6px;
+  font-family: var(--font-subhead);
+  font-weight: 800;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ==========================================================================
+   5. Mobile News Grid (1 Card per row, 20px spacing, 100% width)
+   ========================================================================== */
+.mobile-news-grid-section {
+  padding: 24px 0 36px;
+}
+
+.mobile-news-grid-section__title {
+  font-family: var(--font-headline);
+  font-size: 22px;
+  color: var(--color-ink);
+  margin: 0 0 20px;
+  padding-bottom: 6px;
+  border-bottom: 3px solid var(--color-gold);
+  display: inline-block;
+}
+
+.mobile-article-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Single Column Card */
+.mobile-article-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mobile-article-card__link {
+  display: flex;
+  flex-direction: column;
+  color: inherit;
+}
+
+.mobile-article-card__image-wrapper {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.mobile-article-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mobile-article-card__body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mobile-article-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mobile-article-card__category {
+  border: 1px solid var(--color-navy);
+  color: var(--color-navy);
+  font-family: var(--font-subhead);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.mobile-article-card__time {
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.mobile-article-card__title {
+  font-family: var(--font-subhead);
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.3;
+  color: var(--color-ink);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.mobile-article-card__excerpt {
+  font-size: 15px;
+  color: var(--color-body);
+  line-height: 1.5;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.mobile-article-card__cta {
+  font-family: var(--font-subhead);
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--color-navy);
+  margin-top: 4px;
+}
+
+/* Upload News Button (Height 44-48px) */
+.mobile-news-grid-section__upload-bar {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.mobile-upload-btn {
+  width: 100%;
+  height: 46px;
+  background: var(--color-navy);
+  color: #FFFFFF;
+  font-family: var(--font-subhead);
+  font-weight: 800;
+  font-size: 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   6. Mobile Footer (Centered, Single-Column Vertical Stack)
+   ========================================================================== */
+.mobile-footer {
+  background: var(--color-navy-dark);
+  color: #FFFFFF;
+  border-top: 4px solid var(--color-red);
+  padding: 32px 0 24px;
+  margin-top: auto;
+}
+
+.mobile-footer__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 24px;
+}
+
+.mobile-footer__brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.mobile-footer__logo-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-gold);
+}
+
+.mobile-footer__brand-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mobile-footer__brand-name {
+  font-family: var(--font-headline);
+  font-size: 20px;
+  color: #FFFFFF;
+}
+
+.mobile-footer__brand-tagline {
+  font-size: 12px;
+  color: var(--color-gold);
+  font-family: var(--font-subhead);
+}
+
+.mobile-footer__social-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.mobile-footer__social-label {
+  font-family: var(--font-subhead);
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--color-gold);
+  letter-spacing: 0.06em;
+}
+
+.mobile-footer__social-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 12px;
+}
+
+.mobile-footer__social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.mobile-footer__social-icon {
+  width: 18px;
+  height: 18px;
+  filter: brightness(0) invert(1);
+}
+
+.mobile-footer__groups {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 20px 0;
+}
+
+.mobile-footer__group-heading {
+  font-family: var(--font-subhead);
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--color-gold);
+  margin: 0 0 10px;
+  text-transform: uppercase;
+}
+
+.mobile-footer__group-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mobile-footer__group-link {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.mobile-footer__bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.mobile-footer__credit {
+  color: var(--color-gold);
+}
