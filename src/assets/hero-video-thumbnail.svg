@@ -1,0 +1,9 @@
+<svg width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="450" fill="#0033CC"/>
+  <rect width="800" height="450" fill="#001F80" opacity="0.4"/>
+  <rect x="0" y="0" width="800" height="12" fill="#E71D1D"/>
+  <rect x="0" y="438" width="800" height="12" fill="#FFD400"/>
+  <circle cx="400" cy="225" r="60" fill="#FFD400"/>
+  <path d="M382 198 L432 225 L382 252 Z" fill="#E71D1D"/>
+  <text x="400" y="340" font-family="Arial, sans-serif" font-size="28" font-weight="800" fill="#FFFFFF" text-anchor="middle">LIVE STREAM PREVIEW</text>
+</svg>

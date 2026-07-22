@@ -1,0 +1,6 @@
+<svg width="120" height="48" viewBox="0 0 120 48" xmlns="http://www.w3.org/2000/svg">
+  <rect width="120" height="48" rx="6" fill="#0033CC"/>
+  <rect x="8" y="8" width="14" height="32" fill="#FFD400"/>
+  <rect x="26" y="8" width="14" height="32" fill="#E71D1D"/>
+  <text x="46" y="31" font-family="Arial, sans-serif" font-size="16" font-weight="800" fill="#FFFFFF">BRAND</text>
+</svg>
