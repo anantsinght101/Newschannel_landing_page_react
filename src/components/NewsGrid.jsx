@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import thumb1 from "../assets/article-thumbnail-1.svg";
 import thumb2 from "../assets/article-thumbnail-2.svg";
 import thumb3 from "../assets/article-thumbnail-3.svg";
@@ -6,9 +7,10 @@ import thumb4 from "../assets/article-thumbnail-4.svg";
 import thumb5 from "../assets/article-thumbnail-5.svg";
 import thumb6 from "../assets/article-thumbnail-6.svg";
 import ArticleCard from "./ArticleCard";
-import UploadArticleModal from "./UploadArticleModal";
+import UploadNewsModal from "./UploadNewsModal";
 import { articles, sectionTitles, uploadNewsModal } from "../siteData";
 import { useLanguage } from "../context/LanguageContext";
+import { useAuth } from "../context/AuthContext";
 
 const imageMap = {
   "article-thumbnail-1": thumb1,
@@ -21,7 +23,17 @@ const imageMap = {
 
 export default function NewsGrid() {
   const { lang } = useLanguage();
+  const { session } = useAuth();
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleUploadClick = () => {
+    if (session) {
+      setIsModalOpen(true);
+    } else {
+      navigate("/admin/login");
+    }
+  };
 
   return (
     <section className="news-grid-section" aria-labelledby="news-grid-title">
@@ -48,22 +60,18 @@ export default function NewsGrid() {
           <button
             type="button"
             className="upload-news-btn"
-            onClick={() => {
-              // Popup trigger disabled for now per user request:
-              // setIsModalOpen(true);
-            }}
+            onClick={handleUploadClick}
           >
             {uploadNewsModal.buttonText[lang]}
           </button>
         </div>
       </div>
 
-      {/* Upload News Modal Component (Modal popup disabled for now):
-      <UploadArticleModal
+      {/* Real Supabase Upload News Modal Component */}
+      <UploadNewsModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
-      */}
     </section>
   );
 }
