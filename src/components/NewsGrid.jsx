@@ -48,18 +48,22 @@ export default function NewsGrid() {
           <button
             type="button"
             className="upload-news-btn"
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              // Popup trigger disabled for now per user request:
+              // setIsModalOpen(true);
+            }}
           >
             {uploadNewsModal.buttonText[lang]}
           </button>
         </div>
       </div>
 
-      {/* Upload News Modal Component */}
+      {/* Upload News Modal Component (Modal popup disabled for now):
       <UploadArticleModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
+      */}
     </section>
   );
 }
