@@ -208,3 +208,73 @@ export const socialLinks = [
   { label: "Instagram", to: "https://instagram.com", icon: "icon-social-instagram" },
   { label: "YouTube", to: "https://youtube.com", icon: "icon-social-youtube" },
 ];
+
+export const uploadNewsModal = {
+  buttonText: {
+    mr: "बातमी अपलोड करा +",
+    en: "Upload News Article +",
+  },
+  modalTitle: {
+    mr: "नवीन बातमी अपलोड करा",
+    en: "Upload New Article",
+  },
+  headlineLabel: {
+    mr: "बातमीचे शीर्षक (Headline)",
+    en: "Article Headline",
+  },
+  headlinePlaceholder: {
+    mr: "येथे मुख्य बातमीचे शीर्षक लिहा...",
+    en: "Enter news headline here...",
+  },
+  textLabel: {
+    mr: "बातमीचा मजकूर (Article Content)",
+    en: "Article Content / Story",
+  },
+  textPlaceholder: {
+    mr: "येथे बातमीचा संपूर्ण मजकूर लिहा...",
+    en: "Write the full story / article content here...",
+  },
+  mediaLabel: {
+    mr: "फोटो / व्हिडिओ अपलोड करा (जास्तीत जास्त ५ फायली)",
+    en: "Upload Images / Videos (Max 5 Files)",
+  },
+  mediaHint: {
+    mr: "तुम्ही जास्तीत जास्त ५ फोटो किंवा व्हिडिओ निवडून अपलोड करू शकता.",
+    en: "You can upload up to 5 images or video files.",
+  },
+  submitBtn: {
+    mr: "बातमी सबमिट करा",
+    en: "Submit Article",
+  },
+  cancelBtn: {
+    mr: "रद्द करा",
+    en: "Cancel",
+  },
+  fileLimitAlert: {
+    mr: "कृपया जास्तीत जास्त ५ फायलीच निवडा.",
+    en: "Please select a maximum of 5 files.",
+  },
+  categoryLabel: {
+    mr: "विभाग / श्रेणी निवडा (Category)",
+    en: "Select Category",
+  },
+  categoryPlaceholder: {
+    mr: "-- विभाग निवडा --",
+    en: "-- Select Category --",
+  },
+  categoriesList: [
+    { value: "maharashtra", label: { mr: "महाराष्ट्र", en: "Maharashtra" } },
+    { value: "politics", label: { mr: "राजकारण", en: "Politics" } },
+    { value: "sports", label: { mr: "क्रीडा", en: "Sports" } },
+    { value: "entertainment", label: { mr: "मनोरंजन", en: "Entertainment" } },
+    { value: "business", label: { mr: "व्यवसाय", en: "Business" } },
+    { value: "tech", label: { mr: "तंत्रज्ञान", en: "Technology" } },
+    { value: "agriculture", label: { mr: "कृषी", en: "Agriculture" } },
+    { value: "special", label: { mr: "विशेष", en: "Special Reports" } },
+  ],
+  successMessage: {
+    mr: "बातमी यशस्वीरीत्या सबमिट झाली आहे!",
+    en: "Article successfully submitted!",
+  },
+};
+
