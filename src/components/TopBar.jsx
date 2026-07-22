@@ -7,6 +7,7 @@ import iconInstagram from "../assets/icon-social-instagram.svg";
 import iconWhatsapp from "../assets/icon-social-whatsapp.svg";
 import iconNewsfeed from "../assets/icon-social-newsfeed.svg";
 import { topBarSocialLinks, utilityLinks } from "../siteData";
+import { useLanguage } from "../context/LanguageContext";
 
 const iconMap = {
   "icon-social-facebook": iconFacebook,
@@ -17,10 +18,9 @@ const iconMap = {
   "icon-social-newsfeed": iconNewsfeed,
 };
 
-/**
- * Top utility bar: monochrome social icons (left) + channel logo + utility links (right).
- */
 export default function TopBar() {
+  const { lang, setLang } = useLanguage();
+
   return (
     <div className="topbar">
       <div className="container topbar__inner">
@@ -32,12 +32,13 @@ export default function TopBar() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={social.label}
+                className="topbar__social-link"
               >
                 <img
                   src={iconMap[social.icon]}
                   alt={`${social.label} icon`}
-                  width="20"
-                  height="20"
+                  width="18"
+                  height="18"
                   className="topbar__social-icon"
                 />
               </a>
@@ -53,16 +54,43 @@ export default function TopBar() {
             width="52"
             height="52"
           />
-          <span className="topbar__brand-title">न्यूज यात्रा</span>
+          <div className="topbar__brand-box">
+            <span className="topbar__brand-title">
+              {lang === "mr" ? "न्यूज यात्रा" : "NEWS YATRA"}
+            </span>
+            <span className="topbar__brand-subtitle">
+              {lang === "mr" ? "हे आहे आपलं चॅनल!" : "Independent News"}
+            </span>
+          </div>
         </Link>
 
-        <ul className="topbar__links">
-          {utilityLinks.map((link) => (
-            <li key={link.to}>
-              <Link to={link.to}>{link.label}</Link>
-            </li>
-          ))}
-        </ul>
+        <div className="topbar__right">
+          <div className="lang-switcher" role="group" aria-label="Language Selector">
+            <button
+              type="button"
+              className={`lang-btn${lang === "mr" ? " lang-btn--active" : ""}`}
+              onClick={() => setLang("mr")}
+            >
+              मराठी
+            </button>
+            <span className="lang-divider">|</span>
+            <button
+              type="button"
+              className={`lang-btn${lang === "en" ? " lang-btn--active" : ""}`}
+              onClick={() => setLang("en")}
+            >
+              ENG
+            </button>
+          </div>
+
+          <ul className="topbar__links">
+            {utilityLinks.map((link) => (
+              <li key={link.to}>
+                <Link to={link.to}>{link.label[lang]}</Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );

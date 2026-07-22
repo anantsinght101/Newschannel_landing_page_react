@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import { LanguageProvider } from "./context/LanguageContext";
 import TopBar from "./components/TopBar";
 import Navbar from "./components/Navbar";
 import BreakingTicker from "./components/BreakingTicker";
@@ -8,7 +9,7 @@ import PlaceholderPage from "./pages/PlaceholderPage";
 
 export default function App() {
   return (
-    <>
+    <LanguageProvider>
       <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
@@ -21,6 +22,6 @@ export default function App() {
         <Route path="*" element={<PlaceholderPage />} />
       </Routes>
       <Footer />
-    </>
+    </LanguageProvider>
   );
 }

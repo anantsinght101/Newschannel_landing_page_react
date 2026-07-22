@@ -1,11 +1,10 @@
 import { Link } from "react-router-dom";
+import { sectionTitles } from "../siteData";
+import { useLanguage } from "../context/LanguageContext";
 
-/**
- * Modern Digital-First article card component.
- * Features 16:9 image container, outline category tag, clear headline contrast,
- * and navy-to-red read more interactive hover effect.
- */
 export default function ArticleCard({ image, category, title, excerpt, to }) {
+  const { lang } = useLanguage();
+
   return (
     <li className="article-card">
       <Link to={to} className="article-card__link">
@@ -26,7 +25,7 @@ export default function ArticleCard({ image, category, title, excerpt, to }) {
           <h3 className="article-card__title">{title}</h3>
           <p className="article-card__excerpt">{excerpt}</p>
           <span className="article-card__cta">
-            वाचा अधिक <span className="article-card__arrow">→</span>
+            {sectionTitles.readMoreCTA[lang]} <span className="article-card__arrow">→</span>
           </span>
         </div>
       </Link>

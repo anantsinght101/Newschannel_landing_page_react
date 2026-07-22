@@ -2,15 +2,13 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import iconHamburger from "../assets/icon-hamburger.svg";
 import iconSearch from "../assets/icon-search.svg";
-import { navLinks } from "../siteData";
+import { navLinks, sectionTitles } from "../siteData";
+import { useLanguage } from "../context/LanguageContext";
 
-/**
- * Main category navbar: hamburger icon + category links + search icon + LIVE badge.
- * Theme toggle removed per user request.
- */
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const { lang } = useLanguage();
 
   return (
     <header className="navbar">
@@ -43,7 +41,7 @@ export default function Navbar() {
                   }
                   onClick={() => setIsOpen(false)}
                 >
-                  {link.label}
+                  {link.label[lang]}
                 </NavLink>
               </li>
             ))}
@@ -53,7 +51,7 @@ export default function Navbar() {
         <div className="navbar__actions">
           <div className="navbar__live-badge" title="Live Broadcast Stream Available">
             <span className="navbar__live-dot" />
-            <span className="navbar__live-text">LIVE</span>
+            <span className="navbar__live-text">{sectionTitles.liveBadge[lang]}</span>
           </div>
 
           <button
@@ -76,16 +74,20 @@ export default function Navbar() {
             className="navbar__search-form"
           >
             <label htmlFor="site-search" className="sr-only">
-              Search News
+              {lang === "mr" ? "बातम्या शोधा" : "Search News"}
             </label>
             <input
               id="site-search"
               type="search"
-              placeholder="Search news, topics, videos..."
+              placeholder={
+                lang === "mr"
+                  ? "बातम्या, विषय किंवा व्हिडिओ शोधा..."
+                  : "Search news, topics, videos..."
+              }
               className="navbar__search-input"
             />
             <button type="submit" className="navbar__search-submit">
-              Search
+              {lang === "mr" ? "शोधा" : "Search"}
             </button>
           </form>
         </div>

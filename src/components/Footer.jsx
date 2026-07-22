@@ -6,6 +6,7 @@ import iconInstagram from "../assets/icon-social-instagram.svg";
 import iconYoutube from "../assets/icon-social-youtube.svg";
 import FooterColumn from "./FooterColumn";
 import { footerGroups, socialLinks } from "../siteData";
+import { useLanguage } from "../context/LanguageContext";
 
 const iconMap = {
   "icon-social-facebook": iconFacebook,
@@ -15,19 +16,27 @@ const iconMap = {
 };
 
 export default function Footer() {
+  const { lang } = useLanguage();
+
   return (
     <footer className="footer">
       <div className="container footer__top">
         <Link to="/" className="footer__brand" aria-label="Go to homepage">
           <img src={logo} alt="News Yatra Logo" className="footer__logo-img" width="56" height="56" />
           <div className="footer__brand-text">
-            <span className="footer__brand-name">न्यूज यात्रा</span>
-            <span className="footer__brand-tagline">हे आहे आपलं चॅनल!</span>
+            <span className="footer__brand-name">
+              {lang === "mr" ? "न्यूज यात्रा" : "NEWS YATRA"}
+            </span>
+            <span className="footer__brand-tagline">
+              {lang === "mr" ? "हे आहे आपलं चॅनल!" : "Independent News"}
+            </span>
           </div>
         </Link>
 
         <div className="footer__social-block">
-          <span className="footer__follow-label">आमच्याशी जोडा</span>
+          <span className="footer__follow-label">
+            {lang === "mr" ? "आमच्याशी जोडा" : "FOLLOW US"}
+          </span>
           <ul className="footer__social">
             {socialLinks.map((social) => (
               <li key={social.label}>
@@ -41,8 +50,8 @@ export default function Footer() {
                   <img
                     src={iconMap[social.icon]}
                     alt={`${social.label} icon`}
-                    width="20"
-                    height="20"
+                    width="18"
+                    height="18"
                     className="footer__social-icon"
                   />
                 </a>
@@ -53,13 +62,18 @@ export default function Footer() {
       </div>
 
       <div className="container footer__columns">
-        {footerGroups.map((group) => (
-          <FooterColumn key={group.heading} heading={group.heading} links={group.links} />
+        {footerGroups.map((group, index) => (
+          <FooterColumn key={index} heading={group.heading} links={group.links} />
         ))}
       </div>
 
       <div className="container footer__bottom">
-        <span>&copy; {new Date().getFullYear()} न्यूज यात्रा. सर्व हक्क सुरक्षित.</span>
+        <span>
+          &copy; {new Date().getFullYear()}{" "}
+          {lang === "mr"
+            ? "न्यूज यात्रा. सर्व हक्क सुरक्षित."
+            : "News Yatra. All Rights Reserved."}
+        </span>
         <a href="https://example.com" target="_blank" rel="noopener noreferrer">
           Powered by Digital News Network
         </a>

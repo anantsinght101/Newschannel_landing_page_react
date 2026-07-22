@@ -1,16 +1,16 @@
-import { breakingNews } from "../siteData";
+import { breakingNews, sectionTitles } from "../siteData";
+import { useLanguage } from "../context/LanguageContext";
 
-/**
- * Deep Red Breaking News Ticker component with near-black chip tag.
- */
 export default function BreakingTicker() {
-  const items = [...breakingNews, ...breakingNews];
+  const { lang } = useLanguage();
+  const currentNews = breakingNews[lang] || breakingNews.mr;
+  const items = [...currentNews, ...currentNews];
 
   return (
     <div className="ticker" role="region" aria-label="Breaking news scroller">
       <div className="ticker__label">
         <span className="ticker__flash-dot" />
-        <span>ताजी बातमी</span>
+        <span>{sectionTitles.tickerLabel[lang]}</span>
       </div>
       <div className="ticker__track">
         <div className="ticker__content">

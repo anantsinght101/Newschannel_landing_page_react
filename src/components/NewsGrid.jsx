@@ -5,7 +5,8 @@ import thumb4 from "../assets/article-thumbnail-4.svg";
 import thumb5 from "../assets/article-thumbnail-5.svg";
 import thumb6 from "../assets/article-thumbnail-6.svg";
 import ArticleCard from "./ArticleCard";
-import { articles } from "../siteData";
+import { articles, sectionTitles } from "../siteData";
+import { useLanguage } from "../context/LanguageContext";
 
 const imageMap = {
   "article-thumbnail-1": thumb1,
@@ -16,25 +17,23 @@ const imageMap = {
   "article-thumbnail-6": thumb6,
 };
 
-/**
- * Grid/cards of news articles — sits where the live-stream player used to,
- * directly below the hero heading.
- */
 export default function NewsGrid() {
+  const { lang } = useLanguage();
+
   return (
     <section className="news-grid-section" aria-labelledby="news-grid-title">
       <div className="container">
         <h2 className="news-grid-section__title" id="news-grid-title">
-          Latest Stories
+          {sectionTitles.gridTitle[lang]}
         </h2>
         <ul className="article-grid">
           {articles.map((article) => (
             <ArticleCard
               key={article.id}
               image={imageMap[article.image]}
-              category={article.category}
-              title={article.title}
-              excerpt={article.excerpt}
+              category={article.category[lang]}
+              title={article.title[lang]}
+              excerpt={article.excerpt[lang]}
               to={article.to}
             />
           ))}

@@ -1,10 +1,11 @@
 import heroBanner from "../assets/hero-banner.jpg";
+import { heroContent } from "../siteData";
+import { useLanguage } from "../context/LanguageContext";
 
-/**
- * Hero component displaying the featured news banner with signature accent line
- * and high-impact editorial headline presentation.
- */
 export default function Hero() {
+  const { lang } = useLanguage();
+  const content = heroContent[lang] || heroContent.mr;
+
   return (
     <section className="hero" aria-labelledby="hero-title">
       <div className="container hero__container">
@@ -19,11 +20,12 @@ export default function Hero() {
         <div className="hero__headline-box">
           <div className="hero__eyebrow">
             <span className="hero__live-dot" />
-            <span>विशेष वृत्तांत</span>
+            <span>{content.eyebrow}</span>
           </div>
           <h1 className="hero__title" id="hero-title">
-            न्यूज यात्रा — ठाम परखड शोधयात्रा
+            {content.title}
           </h1>
+          <p className="hero__subtitle">{content.subtitle}</p>
           <div className="hero__accent-rule" />
         </div>
       </div>
