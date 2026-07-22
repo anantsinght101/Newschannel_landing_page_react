@@ -1,25 +1,36 @@
 # Live News Landing Page Template
 
-A React template rebuilding the layout of a live-TV news landing page:
-sticky navbar with many links → hero heading + live player → footer with
-social row + 4 link columns + copyright bar. Colors: bold blue / yellow / red.
+A React template rebuilding the layout of a news landing page's header, main
+content, and footer:
+
+1. **Top utility bar** — social icons (left) + centered logo + text links (right)
+2. **Main navbar** — hamburger icon + 12 category links + search + theme-toggle icons
+3. **Breaking-news ticker** — red scrolling headline bar
+4. **Hero heading** + a grid of news article cards
+5. **Footer** — logo, social row, 4 link columns, copyright bar
+
+Colors: bold blue / yellow / red throughout the navbar, ticker, and footer.
 
 ## Structure
 
 ```
 src/
-  assets/            SVG logo, social icons, hero thumbnail, play icon
+  assets/              SVG logo, social/utility icons, article thumbnails
   components/
-    Navbar.jsx        Logo + horizontal nav links (collapses to menu on mobile)
-    Hero.jsx          Heading + click-to-play video block
-    Footer.jsx        Logo, social links, footer columns, copyright bar
-    FooterColumn.jsx  Reusable footer link-group (used 4x with different data)
+    TopBar.jsx          Social icons + centered logo + utility text links
+    Navbar.jsx           Hamburger + 12 category links + search/theme icons
+    BreakingTicker.jsx   Scrolling red "Breaking News" bar
+    Hero.jsx             Bold heading above the news grid
+    NewsGrid.jsx         Renders the article card grid
+    ArticleCard.jsx       Reusable article card (used 6x with different data)
+    Footer.jsx            Logo, social links, footer columns, copyright bar
+    FooterColumn.jsx      Reusable footer link-group (used 4x with different data)
   pages/
-    Home.jsx           "/" route
-    PlaceholderPage.jsx Catch-all route rendered for every other link
-  siteData.js          All nav links / footer groups / social links live here
-  App.jsx              Router setup
-  main.jsx              Entry point (BrowserRouter)
+    Home.jsx             "/" route
+    PlaceholderPage.jsx   Catch-all route rendered for every other link
+  siteData.js            All nav links / footer groups / articles / ticker text live here
+  App.jsx                Router + header/footer composition
+  main.jsx                Entry point (BrowserRouter)
 ```
 
 ## Run it
