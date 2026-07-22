@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logo from "../assets/logo.svg";
+import logo from "../assets/logo.jpg";
 import iconFacebook from "../assets/icon-social-facebook.svg";
 import iconTwitter from "../assets/icon-social-twitter.svg";
 import iconInstagram from "../assets/icon-social-instagram.svg";
@@ -18,12 +18,16 @@ export default function Footer() {
   return (
     <footer className="footer">
       <div className="container footer__top">
-        <Link to="/" aria-label="Go to homepage">
-          <img src={logo} alt="Brand logo" width="120" height="48" />
+        <Link to="/" className="footer__brand" aria-label="Go to homepage">
+          <img src={logo} alt="News Yatra Logo" className="footer__logo-img" width="56" height="56" />
+          <div className="footer__brand-text">
+            <span className="footer__brand-name">न्यूज यात्रा</span>
+            <span className="footer__brand-tagline">हे आहे आपलं चॅनल!</span>
+          </div>
         </Link>
 
-        <div>
-          <span className="footer__follow-label">FOLLOW US</span>
+        <div className="footer__social-block">
+          <span className="footer__follow-label">आमच्याशी जोडा</span>
           <ul className="footer__social">
             {socialLinks.map((social) => (
               <li key={social.label}>
@@ -32,12 +36,14 @@ export default function Footer() {
                   className="footer__social-link"
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={social.label}
                 >
                   <img
                     src={iconMap[social.icon]}
                     alt={`${social.label} icon`}
-                    width="24"
-                    height="24"
+                    width="20"
+                    height="20"
+                    className="footer__social-icon"
                   />
                 </a>
               </li>
@@ -53,9 +59,9 @@ export default function Footer() {
       </div>
 
       <div className="container footer__bottom">
-        <span>Copyright &copy; {new Date().getFullYear()} Company Name – All Rights Reserved</span>
+        <span>&copy; {new Date().getFullYear()} न्यूज यात्रा. सर्व हक्क सुरक्षित.</span>
         <a href="https://example.com" target="_blank" rel="noopener noreferrer">
-          Powered by Platform Name
+          Powered by Digital News Network
         </a>
       </div>
     </footer>

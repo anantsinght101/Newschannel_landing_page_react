@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logo from "../assets/logo.svg";
+import logo from "../assets/logo.jpg";
 import iconFacebook from "../assets/icon-social-facebook.svg";
 import iconTwitter from "../assets/icon-social-twitter.svg";
 import iconYoutube from "../assets/icon-social-youtube.svg";
@@ -18,9 +18,7 @@ const iconMap = {
 };
 
 /**
- * Top utility bar: social icons (left) + centered logo + text links (right).
- * This is a separate row above the main category navbar, matching the
- * reference site's header structure.
+ * Top utility bar: monochrome social icons (left) + channel logo + utility links (right).
  */
 export default function TopBar() {
   return (
@@ -35,14 +33,27 @@ export default function TopBar() {
                 rel="noopener noreferrer"
                 aria-label={social.label}
               >
-                <img src={iconMap[social.icon]} alt={`${social.label} icon`} width="22" height="22" />
+                <img
+                  src={iconMap[social.icon]}
+                  alt={`${social.label} icon`}
+                  width="20"
+                  height="20"
+                  className="topbar__social-icon"
+                />
               </a>
             </li>
           ))}
         </ul>
 
-        <Link to="/" className="topbar__logo-link" aria-label="Go to homepage">
-          <img src={logo} alt="Brand logo" width="110" height="44" />
+        <Link to="/" className="topbar__logo-link" aria-label="News Yatra Homepage">
+          <img
+            src={logo}
+            alt="News Yatra Logo"
+            className="topbar__logo-img"
+            width="52"
+            height="52"
+          />
+          <span className="topbar__brand-title">न्यूज यात्रा</span>
         </Link>
 
         <ul className="topbar__links">

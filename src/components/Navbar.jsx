@@ -2,13 +2,11 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import iconHamburger from "../assets/icon-hamburger.svg";
 import iconSearch from "../assets/icon-search.svg";
-import iconTheme from "../assets/icon-theme-toggle.svg";
 import { navLinks } from "../siteData";
 
 /**
- * Main category navbar: hamburger icon (left) + the 12 nav links, then
- * search + theme-toggle icons (right) — mirroring the reference site's
- * dedicated nav row (logo lives in <TopBar />, not here).
+ * Main category navbar: hamburger icon + category links + search icon + LIVE badge.
+ * Theme toggle removed per user request.
  */
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,7 +27,7 @@ export default function Navbar() {
         </button>
 
         <nav
-          aria-label="Primary"
+          aria-label="Primary navigation"
           className={`navbar__nav${isOpen ? " navbar__nav--open" : ""}`}
         >
           <ul
@@ -53,6 +51,11 @@ export default function Navbar() {
         </nav>
 
         <div className="navbar__actions">
+          <div className="navbar__live-badge" title="Live Broadcast Stream Available">
+            <span className="navbar__live-dot" />
+            <span className="navbar__live-text">LIVE</span>
+          </div>
+
           <button
             type="button"
             className="navbar__icon-btn"
@@ -61,9 +64,6 @@ export default function Navbar() {
             onClick={() => setIsSearchOpen((open) => !open)}
           >
             <img src={iconSearch} alt="" aria-hidden="true" width="18" height="18" />
-          </button>
-          <button type="button" className="navbar__icon-btn" aria-label="Toggle dark mode">
-            <img src={iconTheme} alt="" aria-hidden="true" width="18" height="18" />
           </button>
         </div>
       </div>
@@ -76,12 +76,12 @@ export default function Navbar() {
             className="navbar__search-form"
           >
             <label htmlFor="site-search" className="sr-only">
-              Search
+              Search News
             </label>
             <input
               id="site-search"
               type="search"
-              placeholder="Search placeholder text"
+              placeholder="Search news, topics, videos..."
               className="navbar__search-input"
             />
             <button type="submit" className="navbar__search-submit">
