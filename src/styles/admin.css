@@ -339,6 +339,12 @@
   color: var(--admin-success);
 }
 
+.modal-alert--info {
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+}
+
 .modal-form-group {
   display: flex;
   flex-direction: column;
