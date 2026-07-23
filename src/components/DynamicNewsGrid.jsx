@@ -280,9 +280,9 @@ export default function DynamicNewsGrid() {
           </ul>
         )}
 
-        {/* Load More & Upload News CTA Bar */}
-        <div className="news-grid-actions">
-          {hasMoreStories && (
+        {/* Load More CTA Bar */}
+        {hasMoreStories && (
+          <div className="news-grid-actions">
             <button
               type="button"
               className="load-more-btn"
@@ -290,18 +290,8 @@ export default function DynamicNewsGrid() {
             >
               {t("loadMoreStories")}
             </button>
-          )}
-
-          {session && (
-            <button
-              type="button"
-              className="upload-news-btn"
-              onClick={handleUploadClick}
-            >
-              {t("uploadNewsBtn")}
-            </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {/* Upload News Modal */}
