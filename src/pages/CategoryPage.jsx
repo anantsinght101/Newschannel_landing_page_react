@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import ArticleCard from "../components/ArticleCard";
-import MobileArticleCard from "../components/MobileArticleCard";
 import { navLinks } from "../siteData";
 import { useLanguage } from "../context/LanguageContext";
 import { useMobileDetector } from "../hooks/useMobileDetector";
@@ -154,30 +153,18 @@ export default function CategoryPage({ routeCategorySlug }) {
           </div>
         ) : (
           <>
-            <ul className={isMobile ? "mobile-article-list" : "article-grid"}>
-              {visibleArticles.map((article) =>
-                isMobile ? (
-                  <MobileArticleCard
-                    key={article.id}
-                    image={article.image}
-                    category={article.categoryName}
-                    title={article.title}
-                    excerpt={article.excerpt}
-                    to={article.to}
-                    publishedAt={article.publishedAt}
-                  />
-                ) : (
-                  <ArticleCard
-                    key={article.id}
-                    image={article.image}
-                    category={article.categoryName}
-                    title={article.title}
-                    excerpt={article.excerpt}
-                    to={article.to}
-                    publishedAt={article.publishedAt}
-                  />
-                )
-              )}
+            <ul className="article-grid">
+              {visibleArticles.map((article) => (
+                <ArticleCard
+                  key={article.id}
+                  image={article.image}
+                  category={article.categoryName}
+                  title={article.title}
+                  excerpt={article.excerpt}
+                  to={article.to}
+                  publishedAt={article.publishedAt}
+                />
+              ))}
             </ul>
 
             {hasMore && (

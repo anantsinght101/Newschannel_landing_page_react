@@ -5,7 +5,7 @@ import { getCategoryLabel } from "../utils/categoryUtils";
 import { uploadNewsModal } from "../siteData";
 
 export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
-  const { lang } = useLanguage();
+  const { lang, t } = useLanguage();
 
   const [headline, setHeadline] = useState("");
   const [categoryId, setCategoryId] = useState("");
@@ -68,21 +68,13 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
     setValidationError("");
 
     if (selectedFiles.length > MAX_FILES) {
-      setValidationError(
-        lang === "mr"
-          ? `तुम्ही ५ पेक्षा जास्त फायली निवडू शकत नाही. (Maximum ${MAX_FILES} files allowed)`
-          : `You cannot select more than ${MAX_FILES} files.`
-      );
+      setValidationError(t("maxFilesExceeded"));
       return;
     }
 
     for (const file of selectedFiles) {
       if (file.size > MAX_FILE_SIZE_BYTES) {
-        setValidationError(
-          lang === "mr"
-            ? `फाईल "${file.name}" खूप मोठी आहे (${(file.size / (1024 * 1024)).toFixed(1)}MB). कमाल मर्यादा ${MAX_FILE_SIZE_MB}MB आहे.`
-            : `File "${file.name}" exceeds limit of ${MAX_FILE_SIZE_MB}MB.`
-        );
+        setValidationError(t("fileSizeExceeded"));
         return;
       }
     }
@@ -117,27 +109,17 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
     setSuccessMessage("");
 
     if (!headline.trim()) {
-      setValidationError(
-        lang === "mr"
-          ? "कृपया बातमीचे शीर्षक प्रविष्ट करा."
-          : "Please enter article headline."
-      );
+      setValidationError(t("fillHeadlineError"));
       return;
     }
 
     if (!categoryId) {
-      setValidationError(
-        lang === "mr" ? "कृपया विभाग / श्रेणी निवडा." : "Please select a category."
-      );
+      setValidationError(t("fillCategoryError"));
       return;
     }
 
     if (!content.trim()) {
-      setValidationError(
-        lang === "mr"
-          ? "कृपया बातमीचा संपूर्ण मजकूर लिहा."
-          : "Please enter article content."
-      );
+      setValidationError(t("fillContentError"));
       return;
     }
 
@@ -149,11 +131,7 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
       if (files.length > 0) {
         for (let i = 0; i < files.length; i++) {
           const file = files[i];
-          setUploadProgress(
-            lang === "mr"
-              ? `फाईल ${i + 1} / ${files.length} अपलोड होत आहे... (${file.name})`
-              : `Uploading file ${i + 1} / ${files.length}... (${file.name})`
-          );
+          setUploadProgress(t("uploadingProgress"));
 
           let uploadedUrl = null;
 
@@ -178,11 +156,7 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
               (edgeError && edgeError.status === 403);
 
             if (isCeilingReached) {
-              const ceilingAlert =
-                lang === "mr"
-                  ? "स्टोरेज क्षमता पूर्ण भरण्याच्या मार्गावर आहे. नवीन फोटो किंवा व्हिडिओ अपलोड करण्यासाठी कृपया साईट प्रशासकाशी संपर्क साधा."
-                  : "Storage is almost full. Please contact the site administrator before uploading more photos or videos.";
-              setSubmitError(ceilingAlert);
+              setSubmitError(t("storageCeilingReached"));
               setIsSubmitting(false);
               setUploadProgress("");
               return; // Stop submission loop immediately!
@@ -320,13 +294,13 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
       >
         <div className="modal-header">
           <h2 id="modal-title" className="modal-title">
-            {uploadNewsModal.modalTitle[lang]}
+            {t("modalTitle")}
           </h2>
           <button
             type="button"
             className="modal-close-btn"
             onClick={handleClose}
-            aria-label="Close modal"
+            aria-label={t("cancelBtn")}
             disabled={isSubmitting}
           >
             &times;
@@ -353,13 +327,13 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
           {/* Headline */}
           <div className="modal-form-group">
             <label htmlFor="headline" className="modal-label">
-              {uploadNewsModal.headlineLabel[lang]} <span className="required-star">*</span>
+              {t("headlineLabel")} <span className="required-star">*</span>
             </label>
             <input
               id="headline"
               type="text"
               className="modal-input"
-              placeholder={uploadNewsModal.headlinePlaceholder[lang]}
+              placeholder={t("headlinePlaceholder")}
               value={headline}
               onChange={(e) => setHeadline(e.target.value)}
               required
@@ -370,7 +344,7 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
           {/* Category Dropdown */}
           <div className="modal-form-group">
             <label htmlFor="category" className="modal-label">
-              {uploadNewsModal.categoryLabel[lang]} <span className="required-star">*</span>
+              {t("categoryLabel")} <span className="required-star">*</span>
             </label>
             <select
               id="category"
@@ -380,7 +354,7 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
               required
               disabled={isSubmitting || loadingCategories}
             >
-              <option value="">-- {uploadNewsModal.categoryPlaceholder[lang]} --</option>
+              <option value="">-- {t("categoryPlaceholder")} --</option>
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
                   {getCategoryLabel(cat.slug || cat.name, lang)}
@@ -393,13 +367,13 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
           {/* Article Content */}
           <div className="modal-form-group">
             <label htmlFor="content" className="modal-label">
-              {uploadNewsModal.textLabel[lang]} <span className="required-star">*</span>
+              {t("contentLabel")} <span className="required-star">*</span>
             </label>
             <textarea
               id="content"
               className="modal-textarea"
               rows={6}
-              placeholder={uploadNewsModal.textPlaceholder[lang]}
+              placeholder={t("contentPlaceholder")}
               value={content}
               onChange={(e) => setContent(e.target.value)}
               required
@@ -410,7 +384,7 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
           {/* YouTube Video URL */}
           <div className="modal-form-group">
             <label htmlFor="youtube-url" className="modal-label">
-              {lang === "mr" ? "YouTube व्हिडिओ लिंक (ऐच्छिक)" : "YouTube Video URL (Optional)"}
+              {t("youtubeUrlLabel")}
             </label>
             <input
               id="youtube-url"
@@ -426,17 +400,13 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
           {/* Author Name */}
           <div className="modal-form-group">
             <label htmlFor="author-name" className="modal-label">
-              {lang === "mr" ? "लेखक / बातमीदार (ऐच्छिक)" : "Author / Reporter Name (Optional)"}
+              {t("authorLabel")}
             </label>
             <input
               id="author-name"
               type="text"
               className="modal-input"
-              placeholder={
-                lang === "mr"
-                  ? "उदा. संजय वरकड / न्यूज यात्रा डिजिटल टीम"
-                  : "e.g. Sanjay Warkad / News Yatra Team"
-              }
+              placeholder={t("authorPlaceholder")}
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
               disabled={isSubmitting}
@@ -446,7 +416,7 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
           {/* Media File Upload */}
           <div className="modal-form-group">
             <label htmlFor="media-files" className="modal-label">
-              {uploadNewsModal.mediaLabel[lang]}
+              {t("mediaLabel")}
             </label>
             <input
               id="media-files"
@@ -457,7 +427,7 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
               onChange={handleFileChange}
               disabled={isSubmitting}
             />
-            <p className="field-hint">{uploadNewsModal.mediaHint[lang]}</p>
+            <p className="field-hint">{t("mediaHint")}</p>
             {files.length > 0 && (
               <ul className="selected-files-list">
                 {files.map((file, idx) => (
@@ -477,18 +447,14 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
               onClick={handleClose}
               disabled={isSubmitting}
             >
-              {uploadNewsModal.cancelBtn[lang]}
+              {t("cancelBtn")}
             </button>
             <button
               type="submit"
               className="modal-btn modal-btn--primary"
               disabled={isSubmitting}
             >
-              {isSubmitting
-                ? lang === "mr"
-                  ? "सबमिट होत आहे..."
-                  : "Submitting..."
-                : uploadNewsModal.submitBtn[lang]}
+              {isSubmitting ? t("submittingBtn") : t("submitBtn")}
             </button>
           </div>
         </form>

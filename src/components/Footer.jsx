@@ -18,7 +18,7 @@ const iconMap = {
 };
 
 export default function Footer() {
-  const { lang } = useLanguage();
+  const { t } = useLanguage();
 
   return (
     <footer className="footer">
@@ -26,21 +26,15 @@ export default function Footer() {
         <Link to="/" className="footer__brand" aria-label="Go to homepage">
           <img src={logo} alt="News Yatra Logo" className="footer__logo-img" width="56" height="56" />
           <div className="footer__brand-text">
-            <span className="footer__brand-name">
-              {lang === "mr" ? "न्यूज यात्रा" : "NEWS YATRA"}
-            </span>
-            <span className="footer__brand-tagline">
-              {lang === "mr" ? "हे आहे आपलं चॅनल!" : "Independent News"}
-            </span>
+            <span className="footer__brand-name">{t("siteName")}</span>
+            <span className="footer__brand-tagline">{t("siteTagline")}</span>
           </div>
         </Link>
 
         {/* Contact info & Social links */}
         <div className="footer__social-block">
           <div className="footer__contact-info">
-            <span className="footer__contact-label">
-              {lang === "mr" ? "संपर्क क्र. / WhatsApp:" : "Contact / WhatsApp:"}
-            </span>
+            <span className="footer__contact-label">{t("contactInfo")}:</span>
             <a
               href="https://wa.me/919764444001"
               target="_blank"
@@ -51,9 +45,7 @@ export default function Footer() {
             </a>
           </div>
 
-          <span className="footer__follow-label">
-            {lang === "mr" ? "आमच्याशी जोडा" : "FOLLOW US"}
-          </span>
+          <span className="footer__follow-label">{t("followUs")}</span>
           <ul className="footer__social">
             {socialLinks.map((social) => (
               <li key={social.label}>
@@ -86,10 +78,7 @@ export default function Footer() {
 
       <div className="container footer__bottom">
         <span>
-          &copy; {new Date().getFullYear()}{" "}
-          {lang === "mr"
-            ? "न्यूज यात्रा. सर्व हक्क सुरक्षित."
-            : "News Yatra. All Rights Reserved."}
+          &copy; {new Date().getFullYear()} {t("siteName")}. {t("allRightsReserved")}
         </span>
         <a
           href="https://wa.me/919764444001"
@@ -97,7 +86,7 @@ export default function Footer() {
           rel="noopener noreferrer"
           className="footer__phone-link"
         >
-          {lang === "mr" ? "संपर्क: ९७६४४४४००१" : "Contact: 9764444001"}
+          📞 9764444001
         </a>
       </div>
     </footer>

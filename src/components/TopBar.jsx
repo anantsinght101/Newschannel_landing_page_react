@@ -19,12 +19,12 @@ const iconMap = {
 };
 
 export default function TopBar() {
-  const { lang, setLang } = useLanguage();
+  const { lang, setLang, t } = useLanguage();
 
   return (
     <div className="topbar">
       <div className="container topbar__inner">
-        {/* Social Links (Logos increased by 10%) */}
+        {/* Social Links */}
         <ul className="topbar__social">
           {topBarSocialLinks.map((social) => (
             <li key={social.label}>
@@ -47,7 +47,7 @@ export default function TopBar() {
           ))}
         </ul>
 
-        {/* Brand Logo & Title (Increased for Marathi bold visibility) */}
+        {/* Brand Logo & Title */}
         <Link to="/" className="topbar__logo-link" aria-label="News Yatra Homepage">
           <img
             src={logo}
@@ -58,17 +58,16 @@ export default function TopBar() {
           />
           <div className="topbar__brand-box">
             <span className={`topbar__brand-title ${lang === "mr" ? "topbar__brand-title--mr" : ""}`}>
-              {lang === "mr" ? "न्यूज यात्रा" : "NEWS YATRA"}
+              {t("siteName")}
             </span>
-            <span className="topbar__brand-subtitle">
-              {lang === "mr" ? "हे आहे आपलं चॅनल!" : "Independent News"}
-            </span>
+            <span className="topbar__brand-subtitle">{t("siteTagline")}</span>
           </div>
         </Link>
 
         {/* Right Utility Bar */}
         <div className="topbar__right">
-          <div className="lang-switcher" role="group" aria-label="Language Selector">
+          {/* Language Switcher */}
+          <div className="lang-switcher" role="group" aria-label={t("selectLanguage")}>
             <button
               type="button"
               className={`lang-btn${lang === "mr" ? " lang-btn--active" : ""}`}
@@ -86,10 +85,11 @@ export default function TopBar() {
             </button>
           </div>
 
+          {/* Utility Navigation Links */}
           <ul className="topbar__links">
             {utilityLinks.map((link) => (
               <li key={link.to}>
-                <Link to={link.to}>{link.label[lang]}</Link>
+                <Link to={link.to}>{link.label[lang] || link.label.mr}</Link>
               </li>
             ))}
           </ul>

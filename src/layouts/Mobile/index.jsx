@@ -2,7 +2,7 @@ import MobileNavbar from "../../components/MobileNavbar";
 import BreakingTicker from "../../components/BreakingTicker";
 import MobileCategoryScroll from "../../components/MobileCategoryScroll";
 import MobileHero from "../../components/MobileHero";
-import MobileNewsGrid from "../../components/MobileNewsGrid";
+import DynamicNewsGrid from "../../components/DynamicNewsGrid";
 import MobileFooter from "../../components/MobileFooter";
 
 export default function MobileLayout({ children }) {
@@ -30,7 +30,7 @@ export default function MobileLayout({ children }) {
         ) : (
           <>
             <MobileHero />
-            <MobileNewsGrid />
+            <DynamicNewsGrid />
           </>
         )}
       </main>

@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ArticleCard from "./ArticleCard";
-import MobileArticleCard from "./MobileArticleCard";
 import UploadNewsModal from "./UploadNewsModal";
-import { sectionTitles } from "../siteData";
 import { useLanguage } from "../context/LanguageContext";
 import { useMobileDetector } from "../hooks/useMobileDetector";
 import { useAuth } from "../context/AuthContext";
@@ -21,7 +19,7 @@ import thumb6 from "../assets/article-thumbnail-6.svg";
 const fallbackThumbnails = [thumb1, thumb2, thumb3, thumb4, thumb5, thumb6];
 
 export default function DynamicNewsGrid() {
-  const { lang } = useLanguage();
+  const { lang, t } = useLanguage();
   const isMobile = useMobileDetector(768);
   const { session } = useAuth();
   const navigate = useNavigate();
@@ -30,10 +28,13 @@ export default function DynamicNewsGrid() {
   const [visibleCount, setVisibleCount] = useState(6);
   const [loading, setLoading] = useState(true);
 
+  // Search state
+  const [searchQuery, setSearchQuery] = useState("");
+
   // Upload modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Fetch articles once on initial mount without re-triggering loading spinners on language toggle
+  // Fetch articles once on initial mount
   useEffect(() => {
     fetchTopCategoryStories();
   }, []);
@@ -86,7 +87,7 @@ export default function DynamicNewsGrid() {
         });
       }
 
-      // Collect the single latest published article per category first
+      // Collect published articles
       const storiesList = [];
       const addedIds = new Set();
 
@@ -109,7 +110,7 @@ export default function DynamicNewsGrid() {
         }
       });
 
-      // Append remaining published articles from DB so all uploaded articles are showcased
+      // Append remaining published articles from DB
       if (dbArticles && dbArticles.length > 0) {
         dbArticles.forEach((art) => {
           if (!addedIds.has(art.id)) {
@@ -151,8 +152,22 @@ export default function DynamicNewsGrid() {
     }
   };
 
-  const visibleStories = categoryStories.slice(0, visibleCount);
-  const hasMoreStories = visibleCount < categoryStories.length;
+  // Filter stories based on search query (Headline, Excerpt, Category Slug, Marathi/English Category Name)
+  const filteredStories = categoryStories.filter((story) => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase().trim();
+
+    const titleMatch = story.title?.toLowerCase().includes(q);
+    const excerptMatch = story.excerpt?.toLowerCase().includes(q);
+    const categorySlugMatch = story.categorySlug?.toLowerCase().includes(q);
+    const categoryMrMatch = getCategoryLabel(story.categorySlug, "mr").toLowerCase().includes(q);
+    const categoryEnMatch = getCategoryLabel(story.categorySlug, "en").toLowerCase().includes(q);
+
+    return titleMatch || excerptMatch || categorySlugMatch || categoryMrMatch || categoryEnMatch;
+  });
+
+  const visibleStories = filteredStories.slice(0, visibleCount);
+  const hasMoreStories = visibleCount < filteredStories.length;
 
   return (
     <section
@@ -160,61 +175,108 @@ export default function DynamicNewsGrid() {
       aria-labelledby="news-grid-title"
     >
       <div className={isMobile ? "mobile-container" : "container"}>
-        {/* Boxed Section Title Header */}
+        {/* Header Box with Section Title & Search Input */}
         <div className="news-grid-section__header-box">
-          <span className="grid-header-accent-dot" />
-          <h2
-            className={isMobile ? "mobile-news-grid-section__title" : "news-grid-section__title"}
-            id="news-grid-title"
-          >
-            {sectionTitles.gridTitle[lang]}
-          </h2>
+          <div className="news-grid-section__title-group">
+            <span className="grid-header-accent-dot" />
+            <h2
+              className={isMobile ? "mobile-news-grid-section__title" : "news-grid-section__title"}
+              id="news-grid-title"
+            >
+              {t("topStories")}
+            </h2>
+          </div>
+
+          {/* Interactive Search Bar */}
+          <div className="news-grid-search-box">
+            <span className="search-box-icon" aria-hidden="true">🔍</span>
+            <input
+              type="text"
+              className="news-grid-search-input"
+              placeholder={t("searchPlaceholder")}
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setVisibleCount(6);
+              }}
+              aria-label={t("searchPlaceholder")}
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                className="search-box-clear-btn"
+                onClick={() => {
+                  setSearchQuery("");
+                  setVisibleCount(6);
+                }}
+                title={t("clearSearch")}
+                aria-label={t("clearSearch")}
+              >
+                ✕
+              </button>
+            )}
+          </div>
         </div>
+
+        {/* Filter Match Status Notification */}
+        {searchQuery.trim() && (
+          <div className="search-filter-badge-bar">
+            <span>
+              {lang === "mr"
+                ? `"${searchQuery}" शोध परिणामांनुसार: ${filteredStories.length} बातम्या सापडल्या`
+                : `Search results for "${searchQuery}": ${filteredStories.length} articles found`}
+            </span>
+            <button
+              type="button"
+              className="search-filter-clear-link"
+              onClick={() => setSearchQuery("")}
+            >
+              {t("clearSearch")}
+            </button>
+          </div>
+        )}
 
         {loading ? (
           <div className="news-grid-loading">
             <div className="spinner-loader" />
-            <p>{lang === "mr" ? "बातम्या लोड होत आहेत..." : "Loading stories..."}</p>
+            <p>{t("loadingStories")}</p>
           </div>
         ) : categoryStories.length === 0 ? (
           <div className="category-empty-state">
             <div className="empty-icon">📰</div>
-            <h3>
-              {lang === "mr"
-                ? "या विभागात अद्याप कोणतीही बातमी उपलब्ध नाही."
-                : "No news articles available yet."}
-            </h3>
+            <h3>{t("noStoriesAvailable")}</h3>
+            <p>{t("uploadHintText")}</p>
+          </div>
+        ) : filteredStories.length === 0 ? (
+          <div className="category-empty-state">
+            <div className="empty-icon">🔍</div>
+            <h3>{t("noSearchResultsTitle")}</h3>
             <p>
               {lang === "mr"
-                ? "नवीन बातमी जोडण्यासाठी खालील बातमी सबमिट करा बटण वापरा."
-                : "Upload a new article using the button below."}
+                ? `"${searchQuery}" साठी कोणतीही बातमी किंवा विभाग सापडला नाही. ${t("noSearchResultsDesc")}`
+                : `No articles matching "${searchQuery}". ${t("noSearchResultsDesc")}`}
             </p>
+            <button
+              type="button"
+              className="load-more-btn"
+              onClick={() => setSearchQuery("")}
+            >
+              {t("clearSearch")}
+            </button>
           </div>
         ) : (
-          <ul className={isMobile ? "mobile-article-list" : "article-grid"}>
-            {visibleStories.map((story) =>
-              isMobile ? (
-                <MobileArticleCard
-                  key={story.id}
-                  image={story.image}
-                  category={getCategoryLabel(story.categorySlug, lang)}
-                  title={story.title}
-                  excerpt={story.excerpt}
-                  to={story.to}
-                  publishedAt={story.publishedAt}
-                />
-              ) : (
-                <ArticleCard
-                  key={story.id}
-                  image={story.image}
-                  category={getCategoryLabel(story.categorySlug, lang)}
-                  title={story.title}
-                  excerpt={story.excerpt}
-                  to={story.to}
-                  publishedAt={story.publishedAt}
-                />
-              )
-            )}
+          <ul className="article-grid">
+            {visibleStories.map((story) => (
+              <ArticleCard
+                key={story.id}
+                image={story.image}
+                category={getCategoryLabel(story.categorySlug, lang)}
+                title={story.title}
+                excerpt={story.excerpt}
+                to={story.to}
+                publishedAt={story.publishedAt}
+              />
+            ))}
           </ul>
         )}
 
@@ -226,7 +288,7 @@ export default function DynamicNewsGrid() {
               className="load-more-btn"
               onClick={handleLoadMore}
             >
-              {lang === "mr" ? "अधिक बातम्या पाहा ↓" : "Load More Stories ↓"}
+              {t("loadMoreStories")}
             </button>
           )}
 
@@ -236,7 +298,7 @@ export default function DynamicNewsGrid() {
               className="upload-news-btn"
               onClick={handleUploadClick}
             >
-              {lang === "mr" ? "+ नवीन बातमी अपलोड करा" : "+ Upload News Article"}
+              {t("uploadNewsBtn")}
             </button>
           )}
         </div>

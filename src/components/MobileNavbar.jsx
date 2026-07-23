@@ -2,13 +2,13 @@ import { useState, useEffect } from "react";
 import { useLocation, Link, NavLink } from "react-router-dom";
 import logo from "../assets/logo.jpg";
 import iconHamburger from "../assets/icon-hamburger.svg";
-import { navLinks, utilityLinks, sectionTitles } from "../siteData";
+import { navLinks, utilityLinks } from "../siteData";
 import { useLanguage } from "../context/LanguageContext";
 import { getCategoryLabel } from "../utils/categoryUtils";
 
 export default function MobileNavbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { lang, setLang } = useLanguage();
+  const { lang, setLang, t } = useLanguage();
   const location = useLocation();
   const isHomePage = location.pathname === "/";
 
@@ -36,37 +36,35 @@ export default function MobileNavbar() {
           type="button"
           className="mobile-navbar__hamburger"
           aria-expanded={isOpen}
-          aria-label={isOpen ? "Close menu" : "Open menu"}
+          aria-label={isOpen ? t("closeMenu") : t("openMenu")}
           onClick={() => setIsOpen((prev) => !prev)}
         >
           <img src={iconHamburger} alt="" width="22" height="22" />
         </button>
 
-        {/* Task 1: Home Button on non-homepage views */}
+        {/* Home Button on non-homepage views */}
         {!isHomePage && (
           <Link
             to="/"
             className="mobile-navbar__home-btn"
-            title={lang === "mr" ? "मुख्यपृष्ठ" : "Home"}
+            title={t("returnHome")}
             onClick={handleLinkClick}
           >
-            🏠 {lang === "mr" ? "होम" : "Home"}
+            🏠 {t("home")}
           </Link>
         )}
 
         {/* Center: Brand Logo */}
         <Link to="/" className="mobile-navbar__logo-link" onClick={handleLinkClick}>
           <img src={logo} alt="News Yatra Logo" className="mobile-navbar__logo-img" />
-          <span className="mobile-navbar__brand-name">
-            {lang === "mr" ? "न्यूज यात्रा" : "NEWS YATRA"}
-          </span>
+          <span className="mobile-navbar__brand-name">{t("siteName")}</span>
         </Link>
 
-        {/* Right: Actions (LIVE Badge only - Task 3: Search button removed) */}
+        {/* Right: Actions */}
         <div className="mobile-navbar__right">
           <div className="mobile-navbar__live-badge">
             <span className="mobile-navbar__live-dot" />
-            <span>{sectionTitles.liveBadge[lang]}</span>
+            <span>{t("liveBadge")}</span>
           </div>
         </div>
       </div>
@@ -78,9 +76,7 @@ export default function MobileNavbar() {
           <div className="mobile-navbar__menu-drawer">
             {/* Language Switcher inside drawer */}
             <div className="mobile-navbar__lang-box">
-              <span className="mobile-navbar__lang-label">
-                {lang === "mr" ? "भाषा निवडा / Language:" : "Language:"}
-              </span>
+              <span className="mobile-navbar__lang-label">{t("selectLanguage")}:</span>
               <div className="mobile-navbar__lang-toggle">
                 <button
                   type="button"
@@ -99,10 +95,9 @@ export default function MobileNavbar() {
               </div>
             </div>
 
-            {/* Task 6 & 5: All Categories Navigation (First option: Categories page) */}
-            <nav aria-label="Mobile Navigation">
+            {/* Navigation Links */}
+            <nav aria-label={t("mainSections")}>
               <ul className="mobile-navbar__links">
-                {/* Task 6: Categories page option is the FIRST option in sidebar */}
                 <li>
                   <NavLink
                     to="/categories"
@@ -111,11 +106,10 @@ export default function MobileNavbar() {
                     }
                     onClick={handleLinkClick}
                   >
-                    📂 {lang === "mr" ? "सर्व विभाग (Categories)" : "All Categories"}
+                    📂 {t("allCategories")}
                   </NavLink>
                 </li>
 
-                {/* Home option in sidebar */}
                 <li>
                   <NavLink
                     to="/"
@@ -124,11 +118,10 @@ export default function MobileNavbar() {
                     }
                     onClick={handleLinkClick}
                   >
-                    🏠 {lang === "mr" ? "मुख्यपृष्ठ (Home)" : "Homepage"}
+                    🏠 {t("homepage")}
                   </NavLink>
                 </li>
 
-                {/* All 12 News Category Pages */}
                 {navLinks.map((link) => (
                   <li key={link.to}>
                     <NavLink
@@ -151,7 +144,7 @@ export default function MobileNavbar() {
                 {utilityLinks.map((link) => (
                   <li key={link.to}>
                     <Link to={link.to} onClick={handleLinkClick}>
-                      {link.label[lang]}
+                      {link.label[lang] || link.label.mr}
                     </Link>
                   </li>
                 ))}

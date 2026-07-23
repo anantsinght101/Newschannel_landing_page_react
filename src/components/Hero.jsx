@@ -1,10 +1,8 @@
 import heroBanner from "../assets/hero-banner.jpg";
-import { heroContent } from "../siteData";
 import { useLanguage } from "../context/LanguageContext";
 
 export default function Hero() {
-  const { lang } = useLanguage();
-  const content = heroContent[lang] || heroContent.mr;
+  const { t } = useLanguage();
 
   return (
     <section className="hero" aria-labelledby="hero-title">
@@ -13,19 +11,19 @@ export default function Hero() {
         <div className="hero__headline-box">
           <div className="hero__eyebrow">
             <span className="hero__live-dot" />
-            <span>{content.eyebrow}</span>
+            <span>{t("heroEyebrow")}</span>
           </div>
           <h1 className="hero__title" id="hero-title">
-            {content.title}
+            {t("heroTitle")}
           </h1>
-          <p className="hero__subtitle">{content.subtitle}</p>
+          <p className="hero__subtitle">{t("heroSubtitle")}</p>
         </div>
 
         {/* Right-aligned reduced width Hero Banner Image */}
         <div className="hero__banner-wrapper">
           <img
             src={heroBanner}
-            alt="न्यूज यात्रा - ठाम परखड शोधयात्रा - संजय वरकड"
+            alt={t("siteName")}
             className="hero__banner-img"
             loading="eager"
           />

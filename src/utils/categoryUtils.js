@@ -14,6 +14,7 @@ export const categoryTranslationMap = {
   videos: { mr: "व्हिडिओ", en: "Videos" },
   special: { mr: "विशेष", en: "Special" },
   global: { mr: "ग्लोबल", en: "Global" },
+  others: { mr: "इतर", en: "Others" },
 };
 
 // Map Marathi names back to slugs
@@ -31,14 +32,16 @@ export const marathiToSlugMap = {
   "व्हिडिओ": "videos",
   "विशेष": "special",
   "ग्लोबल": "global",
+  "इतर": "others",
 };
 
 /**
- * Get category label in active language
+ * Get category label in active language.
+ * Unmapped/unknown category names or slugs automatically map to "इतर / Others".
  */
 export function getCategoryLabel(categoryKeyOrSlugOrName, lang = "mr") {
   if (!categoryKeyOrSlugOrName) {
-    return lang === "mr" ? "ताज्या बातम्या" : "Latest";
+    return categoryTranslationMap.others[lang];
   }
 
   const keyLower = String(categoryKeyOrSlugOrName).toLowerCase().replace("/", "");
@@ -67,5 +70,6 @@ export function getCategoryLabel(categoryKeyOrSlugOrName, lang = "mr") {
     return navItem.label[lang] || navItem.label.mr;
   }
 
-  return categoryKeyOrSlugOrName;
+  // Fallback to "इतर / Others" for any unmapped category
+  return categoryTranslationMap.others[lang];
 }

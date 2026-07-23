@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { sectionTitles } from "../siteData";
 import { useLanguage } from "../context/LanguageContext";
 import { formatTimeAgo } from "../utils/dateUtils";
 import { getCategoryLabel } from "../utils/categoryUtils";
@@ -13,13 +12,11 @@ export default function ArticleCard({
   to,
   publishedAt,
 }) {
-  const { lang } = useLanguage();
+  const { lang, t } = useLanguage();
   const displayCategory = getCategoryLabel(category, lang);
   const timeLabel = publishedAt
     ? formatTimeAgo(publishedAt, lang)
-    : lang === "mr"
-    ? "नुकतेच"
-    : "Recent";
+    : t("recentTime");
 
   return (
     <li className="article-card">
@@ -45,7 +42,7 @@ export default function ArticleCard({
           <h3 className="article-card__title">{title}</h3>
           <p className="article-card__excerpt">{excerpt}</p>
           <span className="article-card__cta">
-            {sectionTitles.readMoreCTA[lang]} <span className="article-card__arrow">→</span>
+            {t("readMore")} <span className="article-card__arrow">→</span>
           </span>
         </div>
       </Link>

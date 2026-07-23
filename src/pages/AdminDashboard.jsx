@@ -1,16 +1,11 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
 import UploadNewsModal from "../components/UploadNewsModal";
 
-/**
- * AdminDashboard - Home base for admin actions
- *
- * NOTE: Since there is only ever one admin account, RLS policies treat
- * "any authenticated user" as "the admin" for now — an admins table or role
- * system is unnecessary for a single fixed account.
- */
 export default function AdminDashboard() {
   const { user, signOut } = useAuth();
+  const { t } = useLanguage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [recentUpload, setRecentUpload] = useState(null);
 
@@ -23,9 +18,9 @@ export default function AdminDashboard() {
       <div className="container">
         <div className="admin-dashboard-header">
           <div>
-            <h1 className="admin-dashboard-title">अ‍ॅडमिन डॅशबोर्ड (Admin Dashboard)</h1>
+            <h1 className="admin-dashboard-title">{t("adminDashboardTitle")}</h1>
             <p className="admin-dashboard-subtitle">
-              लॉग इन वापरकर्ता: <strong>{user?.email}</strong>
+              {t("loggedInUser")} <strong>{user?.email}</strong>
             </p>
           </div>
           <div className="admin-dashboard-actions">
@@ -34,40 +29,38 @@ export default function AdminDashboard() {
               className="admin-btn admin-btn--primary"
               onClick={() => setIsModalOpen(true)}
             >
-              + नवीन बातमी अपलोड करा
+              {t("uploadNewsBtn")}
             </button>
             <button
               type="button"
               className="admin-btn admin-btn--danger"
               onClick={signOut}
             >
-              लॉग आउट (Log Out)
+              {t("logOutBtn")}
             </button>
           </div>
         </div>
 
         <div className="admin-dashboard-content">
           <div className="admin-card">
-            <h2>प्रणाली स्थिती (System Status)</h2>
-            <p>
-              अ‍ॅडमिन पोर्टलमध्ये आपले स्वागत आहे. येथून आपण नवीन बातमी अपलोड करू शकता व तिचा मसुदा (pending status) डेटाबेसमध्ये पाठवू शकता.
-            </p>
+            <h2>{t("systemStatusTitle")}</h2>
+            <p>{t("systemStatusDesc")}</p>
           </div>
 
           {recentUpload && (
             <div className="admin-card admin-card--success">
-              <h3>अलीकडे सबमिट केलेली बातमी (Recently Submitted News)</h3>
+              <h3>{t("recentlySubmittedNews")}</h3>
               <p>
-                <strong>शीर्षक:</strong> {recentUpload.headline}
+                <strong>{t("headline")}:</strong> {recentUpload.headline}
               </p>
               <p>
-                <strong>स्थिती:</strong>{" "}
+                <strong>{t("status")}:</strong>{" "}
                 <span className="status-badge status-badge--pending">
                   {recentUpload.status}
                 </span>
               </p>
               <p>
-                <strong>आयडी:</strong> <code>{recentUpload.id}</code>
+                <strong>{t("articleId")}:</strong> <code>{recentUpload.id}</code>
               </p>
             </div>
           )}

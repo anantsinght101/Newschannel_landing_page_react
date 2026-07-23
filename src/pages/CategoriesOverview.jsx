@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import ArticleCard from "../components/ArticleCard";
-import MobileArticleCard from "../components/MobileArticleCard";
 import { useLanguage } from "../context/LanguageContext";
 import { useMobileDetector } from "../hooks/useMobileDetector";
 import { supabase } from "../lib/supabaseClient";
@@ -126,30 +125,18 @@ export default function CategoriesOverview() {
             </Link>
           </div>
         ) : (
-          <ul className={isMobile ? "mobile-article-list" : "article-grid"}>
-            {categoriesList.map((catItem) =>
-              isMobile ? (
-                <MobileArticleCard
-                  key={catItem.id}
-                  image={catItem.image}
-                  category={catItem.categoryName}
-                  title={catItem.title}
-                  excerpt={catItem.excerpt}
-                  to={catItem.to}
-                  publishedAt={catItem.publishedAt}
-                />
-              ) : (
-                <ArticleCard
-                  key={catItem.id}
-                  image={catItem.image}
-                  category={catItem.categoryName}
-                  title={catItem.title}
-                  excerpt={catItem.excerpt}
-                  to={catItem.to}
-                  publishedAt={catItem.publishedAt}
-                />
-              )
-            )}
+          <ul className="article-grid">
+            {categoriesList.map((catItem) => (
+              <ArticleCard
+                key={catItem.id}
+                image={catItem.image}
+                category={catItem.categoryName}
+                title={catItem.title}
+                excerpt={catItem.excerpt}
+                to={catItem.to}
+                publishedAt={catItem.publishedAt}
+              />
+            ))}
           </ul>
         )}
       </div>

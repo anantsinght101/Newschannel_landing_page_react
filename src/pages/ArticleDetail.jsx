@@ -7,7 +7,6 @@ import { formatFullDate, formatTimeAgo } from "../utils/dateUtils";
 import { extractYouTubeId } from "../utils/youtubeUtils";
 import { getCategoryLabel } from "../utils/categoryUtils";
 import ArticleCard from "../components/ArticleCard";
-import MobileArticleCard from "../components/MobileArticleCard";
 
 // Import sample thumbnails as fallbacks for missing media images
 import thumb1 from "../assets/article-thumbnail-1.svg";
@@ -307,30 +306,18 @@ export default function ArticleDetail() {
             <h3 className="related-title">
               {lang === "mr" ? "संबंधित बातम्या" : "Related Stories"}
             </h3>
-            <ul className={isMobile ? "mobile-article-list" : "article-grid"}>
-              {relatedArticles.map((relArt) =>
-                isMobile ? (
-                  <MobileArticleCard
-                    key={relArt.id}
-                    image={relArt.image}
-                    category={relArt.categoryName}
-                    title={relArt.title}
-                    excerpt={relArt.excerpt}
-                    to={relArt.to}
-                    publishedAt={relArt.publishedAt}
-                  />
-                ) : (
-                  <ArticleCard
-                    key={relArt.id}
-                    image={relArt.image}
-                    category={relArt.categoryName}
-                    title={relArt.title}
-                    excerpt={relArt.excerpt}
-                    to={relArt.to}
-                    publishedAt={relArt.publishedAt}
-                  />
-                )
-              )}
+            <ul className="article-grid">
+              {relatedArticles.map((relArt) => (
+                <ArticleCard
+                  key={relArt.id}
+                  image={relArt.image}
+                  category={relArt.categoryName}
+                  title={relArt.title}
+                  excerpt={relArt.excerpt}
+                  to={relArt.to}
+                  publishedAt={relArt.publishedAt}
+                />
+              ))}
             </ul>
           </section>
         )}

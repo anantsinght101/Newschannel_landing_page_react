@@ -1,79 +1,71 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { supabase } from "../lib/supabaseClient";
-import { sectionTitles } from "../siteData";
 import { useLanguage } from "../context/LanguageContext";
+import { supabase } from "../lib/supabaseClient";
 
 export default function BreakingTicker() {
-  const { lang } = useLanguage();
-  const [tickerHeadlines, setTickerHeadlines] = useState([]);
+  const { lang, t } = useLanguage();
+  const [headlines, setHeadlines] = useState([]);
 
   useEffect(() => {
     fetchLatestHeadlines();
-  }, [lang]);
+  }, []);
 
   const fetchLatestHeadlines = async () => {
     try {
-      // Fetch latest 10 published news articles from Supabase database
-      const { data: dbArticles } = await supabase
+      // Query published articles ordered by created_at descending
+      const { data, error } = await supabase
         .from("articles")
         .select("id, headline, created_at, published_at")
         .eq("status", "published")
         .order("created_at", { ascending: false })
         .limit(10);
 
-      const items = [];
-      if (dbArticles && dbArticles.length > 0) {
-        dbArticles.forEach((art) => {
-          items.push({
-            id: art.id,
-            title: art.headline,
-            to: `/article/${art.id}`,
-          });
-        });
+      if (!error && data && data.length > 0) {
+        const headlineItems = data.map((item) => ({
+          id: item.id,
+          text: item.headline,
+          to: `/article/${item.id}`,
+        }));
+        setHeadlines(headlineItems);
       } else {
-        items.push({
-          id: "channel-default",
-          title:
-            lang === "mr"
-              ? "न्यूज यात्रा डिजिटल टीम — ताज्या व निष्पक्ष बातम्यांसाठी पाहत राहा न्यूज यात्रा."
-              : "News Yatra — Stay tuned for live independent news coverage.",
-          to: "/",
-        });
+        setHeadlines([
+          {
+            id: "default-1",
+            text:
+              lang === "mr"
+                ? "न्यूज यात्रा वर ताजी आणि सविस्तर माहिती पाहा..."
+                : "Watch live updates and in-depth news on News Yatra...",
+            to: "/",
+          },
+        ]);
       }
-
-      setTickerHeadlines(items);
     } catch (err) {
-      console.error("Error fetching breaking news ticker headlines:", err);
-      setTickerHeadlines([
-        {
-          id: "channel-fallback",
-          title:
-            lang === "mr"
-              ? "न्यूज यात्रा डिजिटल टीम — ताज्या बातम्या."
-              : "News Yatra — Live Coverage.",
-          to: "/",
-        },
-      ]);
+      console.error("Error fetching breaking headlines:", err);
     }
   };
 
-  // Duplicate items array to create seamless infinite CSS marquee scrolling loop
-  const displayItems = [...tickerHeadlines, ...tickerHeadlines];
-
   return (
-    <div className="ticker" role="region" aria-label="Breaking news scroller">
+    <div className="ticker" aria-label={t("breakingNews")}>
       <div className="ticker__label">
         <span className="ticker__flash-dot" />
-        <span>{sectionTitles.tickerLabel[lang]}</span>
+        <span>{t("breakingNews")}</span>
       </div>
+
       <div className="ticker__track">
         <div className="ticker__content">
-          {displayItems.map((item, index) => (
-            <span className="ticker__item" key={`${item.id}-${index}`}>
-              <span className="ticker__bullet">•</span>{" "}
+          {headlines.map((item, idx) => (
+            <span key={`${item.id}-${idx}`} className="ticker__item">
               <Link to={item.to} className="ticker__headline-link">
-                {item.title}
+                {item.text}
+              </Link>
+            </span>
+          ))}
+          {/* Duplicate loop for seamless infinite marquee loop */}
+          {headlines.map((item, idx) => (
+            <span key={`dup-${item.id}-${idx}`} className="ticker__item" aria-hidden="true">
+              <Link to={item.to} className="ticker__headline-link">
+                {item.text}
               </Link>
             </span>
           ))}

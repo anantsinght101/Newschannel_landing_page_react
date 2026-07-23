@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
 import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
 import logo from "../assets/logo.jpg";
 
 export default function AdminLogin() {
@@ -13,6 +14,7 @@ export default function AdminLogin() {
   const navigate = useNavigate();
   const location = useLocation();
   const { session } = useAuth();
+  const { t } = useLanguage();
 
   const from = location.state?.from?.pathname || "/admin";
 
@@ -26,7 +28,7 @@ export default function AdminLogin() {
     setErrorMsg("");
 
     if (!email.trim() || !password) {
-      setErrorMsg("कृपया ई-मेल आणि पासवर्ड दोन्ही भरा. (Please enter both email and password)");
+      setErrorMsg(t("loginRequiredError"));
       return;
     }
 
@@ -39,12 +41,12 @@ export default function AdminLogin() {
       });
 
       if (error) {
-        setErrorMsg(error.message || "लॉगिन अयशस्वी. कृपया तपशील तपासा.");
+        setErrorMsg(t("loginFailedError"));
       } else if (data?.user) {
         navigate(from, { replace: true });
       }
     } catch (err) {
-      setErrorMsg("काहीतरी चुकीचे घडले. कृपया पुन्हा प्रयत्न करा.");
+      setErrorMsg(t("unexpectedError"));
       console.error("Login error:", err);
     } finally {
       setIsSubmitting(false);
@@ -56,19 +58,19 @@ export default function AdminLogin() {
       <div className="admin-login-card">
         <div className="admin-login-header">
           <img src={logo} alt="News Yatra Logo" className="admin-login-logo" />
-          <h1 className="admin-login-title">अ‍ॅडमिन लॉगिन</h1>
-          <p className="admin-login-subtitle">न्यूज यात्रा - व्यवस्थापन प्रणाली (Admin Portal)</p>
+          <h1 className="admin-login-title">{t("adminPortalTitle")}</h1>
+          <p className="admin-login-subtitle">{t("adminPortalSubtitle")}</p>
         </div>
 
         {errorMsg && <div className="admin-login-error">{errorMsg}</div>}
 
         <form onSubmit={handleSubmit} className="admin-login-form">
           <div className="admin-form-group">
-            <label htmlFor="admin-email">ई-मेल आयडी (Email ID)</label>
+            <label htmlFor="admin-email">{t("emailLabel")}</label>
             <input
               id="admin-email"
               type="email"
-              placeholder="admin@newsyatra.com"
+              placeholder={t("emailPlaceholder")}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -77,11 +79,11 @@ export default function AdminLogin() {
           </div>
 
           <div className="admin-form-group">
-            <label htmlFor="admin-password">पासवर्ड (Password)</label>
+            <label htmlFor="admin-password">{t("passwordLabel")}</label>
             <input
               id="admin-password"
               type="password"
-              placeholder="••••••••"
+              placeholder={t("passwordPlaceholder")}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -94,7 +96,7 @@ export default function AdminLogin() {
             className="admin-login-submit-btn"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "लॉगिन करत आहे..." : "लॉगिन करा (Log In)"}
+            {isSubmitting ? t("loggingIn") : t("loginBtn")}
           </button>
         </form>
       </div>
