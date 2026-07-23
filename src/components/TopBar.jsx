@@ -24,6 +24,7 @@ export default function TopBar() {
   return (
     <div className="topbar">
       <div className="container topbar__inner">
+        {/* Social Links (Logos increased by 10%) */}
         <ul className="topbar__social">
           {topBarSocialLinks.map((social) => (
             <li key={social.label}>
@@ -37,8 +38,8 @@ export default function TopBar() {
                 <img
                   src={iconMap[social.icon]}
                   alt={`${social.label} icon`}
-                  width="18"
-                  height="18"
+                  width="20"
+                  height="20"
                   className="topbar__social-icon"
                 />
               </a>
@@ -46,16 +47,17 @@ export default function TopBar() {
           ))}
         </ul>
 
+        {/* Brand Logo & Title (Increased for Marathi bold visibility) */}
         <Link to="/" className="topbar__logo-link" aria-label="News Yatra Homepage">
           <img
             src={logo}
             alt="News Yatra Logo"
             className="topbar__logo-img"
-            width="52"
-            height="52"
+            width="60"
+            height="60"
           />
           <div className="topbar__brand-box">
-            <span className="topbar__brand-title">
+            <span className={`topbar__brand-title ${lang === "mr" ? "topbar__brand-title--mr" : ""}`}>
               {lang === "mr" ? "न्यूज यात्रा" : "NEWS YATRA"}
             </span>
             <span className="topbar__brand-subtitle">
@@ -64,6 +66,7 @@ export default function TopBar() {
           </div>
         </Link>
 
+        {/* Right Utility Bar */}
         <div className="topbar__right">
           <div className="lang-switcher" role="group" aria-label="Language Selector">
             <button

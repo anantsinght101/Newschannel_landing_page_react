@@ -9,14 +9,7 @@ export default function Hero() {
   return (
     <section className="hero" aria-labelledby="hero-title">
       <div className="container hero__container">
-        <div className="hero__banner-wrapper">
-          <img
-            src={heroBanner}
-            alt="न्यूज यात्रा - ठाम परखड शोधयात्रा - संजय वरकड"
-            className="hero__banner-img"
-            loading="eager"
-          />
-        </div>
+        {/* Headline Box on Left */}
         <div className="hero__headline-box">
           <div className="hero__eyebrow">
             <span className="hero__live-dot" />
@@ -26,7 +19,16 @@ export default function Hero() {
             {content.title}
           </h1>
           <p className="hero__subtitle">{content.subtitle}</p>
-          <div className="hero__accent-rule" />
+        </div>
+
+        {/* Right-aligned reduced width Hero Banner Image */}
+        <div className="hero__banner-wrapper">
+          <img
+            src={heroBanner}
+            alt="न्यूज यात्रा - ठाम परखड शोधयात्रा - संजय वरकड"
+            className="hero__banner-img"
+            loading="eager"
+          />
         </div>
       </div>
     </section>

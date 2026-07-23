@@ -12,6 +12,7 @@ export const navLinks = [
   { to: "/interviews", label: { mr: "संवाद", en: "Interviews" } },
   { to: "/videos", label: { mr: "व्हिडिओ", en: "Videos" } },
   { to: "/special", label: { mr: "विशेष", en: "Special" } },
+  { to: "/global", label: { mr: "ग्लोबल", en: "Global" } },
 ];
 
 export const utilityLinks = [
@@ -22,27 +23,16 @@ export const utilityLinks = [
 ];
 
 export const topBarSocialLinks = [
+  { label: "Instagram", to: "https://instagram.com/newsyatra2025", icon: "icon-social-instagram" },
+  { label: "YouTube", to: "https://www.youtube.com/@NewsYatraS", icon: "icon-social-youtube" },
+  { label: "WhatsApp", to: "https://wa.me/919764444001", icon: "icon-social-whatsapp" },
   { label: "Facebook", to: "https://facebook.com", icon: "icon-social-facebook" },
   { label: "Twitter", to: "https://twitter.com", icon: "icon-social-twitter" },
-  { label: "YouTube", to: "https://youtube.com", icon: "icon-social-youtube" },
-  { label: "Instagram", to: "https://instagram.com", icon: "icon-social-instagram" },
-  { label: "WhatsApp", to: "https://whatsapp.com", icon: "icon-social-whatsapp" },
-  { label: "Newsfeed", to: "https://news.google.com", icon: "icon-social-newsfeed" },
 ];
 
 export const breakingNews = {
-  mr: [
-    "न्यूज यात्रा विशेष: महाराष्ट्र राजकारणातील ताज्या घडामोडींचे थेट अपडेट्स",
-    "हवामान इशारा: पुढील २४ तासांत कोकण आणि मध्य महाराष्ट्रात मुसळधार पावसाची शक्यता",
-    "क्रीडा वृत्त: भारतीय क्रिकेट संघाचा ऐतिहासिक विजय; चाहत्यांचा जल्लोष",
-    "शेतीविषयक: शेतकऱ्यांसाठी शासनाची नवीन योजना जाहीर; वाचा सविस्तर",
-  ],
-  en: [
-    "News Yatra Live: Special coverage on latest political developments",
-    "Weather Alert: Heavy rainfall predicted across Konkan and Central Maharashtra",
-    "Sports Update: Team India achieves historic victory; fans celebrate",
-    "Agri News: Government announces new welfare policy for farmers",
-  ],
+  mr: [],
+  en: [],
 };
 
 export const heroContent = {
@@ -79,92 +69,7 @@ export const sectionTitles = {
   },
 };
 
-export const articles = [
-  {
-    id: "article-1",
-    category: { mr: "राजकारण", en: "Politics" },
-    title: {
-      mr: "राज्यातील आगामी निवडणुकांबाबत महत्त्वाचा निर्णय; राजकीय वर्तुळात मोठी चर्चा",
-      en: "Key decision announced regarding upcoming state elections",
-    },
-    excerpt: {
-      mr: "निवडणूक आयोगाच्या बैठकीत महत्त्वाच्या विषयांवर सविस्तर चर्चा; सर्व पक्षांची लक्षवेधी प्रतिक्रिया.",
-      en: "Election commission meets to finalize key guidelines ahead of upcoming state polls.",
-    },
-    image: "article-thumbnail-1",
-    to: "/article-1",
-  },
-  {
-    id: "article-2",
-    category: { mr: "महाराष्ट्र", en: "State" },
-    title: {
-      mr: "राज्यात नवीन पायाभूत सुविधा प्रकल्पांना गती; कोट्यवधींच्या निधीला मंजुरी",
-      en: "Infrastructure push: Major funding approved for new state transit projects",
-    },
-    excerpt: {
-      mr: "वाहतूक व्यवस्था सुधारण्यासाठी आणि रोजगाराच्या संधी वाढवण्यासाठी महत्त्वपूर्ण निर्णय.",
-      en: "Government approves multi-crore investment for highway and regional transit networks.",
-    },
-    image: "article-thumbnail-2",
-    to: "/article-2",
-  },
-  {
-    id: "article-3",
-    category: { mr: "कृषी", en: "Agriculture" },
-    title: {
-      mr: "बळीराजासाठी दिलासादायक बातमी; पिकांच्या हमीभावात मोठी वाढ जाहीर",
-      en: "Relief for farmers as government increases minimum support price for crops",
-    },
-    excerpt: {
-      mr: "शेतकऱ्यांचे उत्पन्न वाढवण्यासाठी केंद्राचा मोठा निर्णय; राज्यातील शेतकऱ्यांकडून स्वागत.",
-      en: "New support price policy aims to boost rural economy and safeguard crop yields.",
-    },
-    image: "article-thumbnail-3",
-    to: "/article-3",
-  },
-  {
-    id: "article-4",
-    category: { mr: "क्रीडा", en: "Sports" },
-    title: {
-      mr: "भारतीय संघाचा शानदार विजय; मालिका जिंकून रचला नवा ऐतिहासिक विक्रम",
-      en: "Team India clinches thrilling victory to seal international championship title",
-    },
-    excerpt: {
-      mr: "उत्कृष्ट फलंदाजी आणि भेदक गोलंदाजीच्या जोरावर विरोधी संघाचा पूर्ण धुव्वा.",
-      en: "Outstanding team performance leads to memorable series triumph on foreign soil.",
-    },
-    image: "article-thumbnail-4",
-    to: "/article-4",
-  },
-  {
-    id: "article-5",
-    category: { mr: "तंत्रज्ञान", en: "Technology" },
-    title: {
-      mr: "डिजिटल युगात सायबर सुरक्षेचे महत्त्व; नागरिकांसाठी महत्त्वाच्या टिप्स",
-      en: "Cybersecurity awareness: Essential safety guidelines for digital payment users",
-    },
-    excerpt: {
-      mr: "ऑनलाइन फसवणुकीपासून स्वतःचे संरक्षण करण्यासाठी या सोप्या नियमांचे पालन करा.",
-      en: "Experts share vital advice on protecting personal data and online transactions.",
-    },
-    image: "article-thumbnail-5",
-    to: "/article-5",
-  },
-  {
-    id: "article-6",
-    category: { mr: "मनोरंजन", en: "Entertainment" },
-    title: {
-      mr: "मराठी चित्रपटसृष्टीत नवीन पर्वाची सुरुवात; प्रेक्षकांचा उत्स्फूर्त प्रतिसाद",
-      en: "New era in Marathi cinema as latest release receives overwhelming box office response",
-    },
-    excerpt: {
-      mr: "दमदार कथानक आणि उत्कृष्ट अभिनयाने रसिकांची मने जिंकली; चित्रपटगृहे हाऊसफुल्ल.",
-      en: "Box office success highlights strong storytelling and powerful performances.",
-    },
-    image: "article-thumbnail-6",
-    to: "/article-6",
-  },
-];
+export const articles = [];
 
 export const footerGroups = [
   {
@@ -204,10 +109,10 @@ export const footerGroups = [
 ];
 
 export const socialLinks = [
+  { label: "Instagram", to: "https://instagram.com/newsyatra2025", icon: "icon-social-instagram" },
+  { label: "YouTube", to: "https://www.youtube.com/@NewsYatraS", icon: "icon-social-youtube" },
+  { label: "WhatsApp", to: "https://wa.me/919764444001", icon: "icon-social-whatsapp" },
   { label: "Facebook", to: "https://facebook.com", icon: "icon-social-facebook" },
-  { label: "Twitter", to: "https://twitter.com", icon: "icon-social-twitter" },
-  { label: "Instagram", to: "https://instagram.com", icon: "icon-social-instagram" },
-  { label: "YouTube", to: "https://youtube.com", icon: "icon-social-youtube" },
 ];
 
 export const uploadNewsModal = {

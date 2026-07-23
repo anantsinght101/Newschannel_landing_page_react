@@ -1,6 +1,6 @@
-# Supabase & Cloudflare R2 Admin Setup Guide - Step 2
+# Supabase & Cloudflare R2 Admin Setup Guide - Step 3
 
-Follow these step-by-step instructions to connect your Supabase project, execute database migrations, set up Cloudflare R2 storage, configure Supabase Edge Function secrets, and deploy the `generate-upload-url` function.
+Follow these step-by-step instructions to connect your Supabase project, execute database migrations, set up Cloudflare R2 storage, configure Supabase Edge Function secrets, deploy the `generate-upload-url` function, and enable the free-tier safety ceiling.
 
 ---
 
@@ -39,35 +39,47 @@ create table if not exists articles (
   category_id uuid references categories(id) not null,
   content text not null,
   media_urls text[] not null default '{}',
+  youtube_url text,
+  author text default 'न्यूज यात्रा डिजिटल टीम',
   status text not null default 'pending'
     check (status in ('pending', 'published', 'rejected')),
   created_at timestamptz not null default now(),
   published_at timestamptz
 );
 
--- Step 4: Enable Row Level Security (RLS)
+-- Step 4: Storage Usage Cache Table (Step 3 R2 Free-Tier Safety Ceiling)
+create table if not exists storage_usage_cache (
+  id int primary key default 1,
+  total_bytes bigint not null default 0,
+  checked_at timestamptz not null default now(),
+  constraint single_row check (id = 1)
+);
+
+insert into storage_usage_cache (id, total_bytes, checked_at)
+values (1, 0, now())
+on conflict (id) do nothing;
+
+-- Step 5: Enable Row Level Security (RLS)
 alter table categories enable row level security;
 alter table articles enable row level security;
+alter table storage_usage_cache enable row level security;
 
--- Step 5: Define RLS Policies
--- Public can read categories (required for upload form dropdown & navigation)
+-- Public can read categories
 create policy "Public read categories"
   on categories for select
   using (true);
 
--- Public can read only published articles
+-- Public can read published articles
 create policy "Public read published articles"
   on articles for select
   using (status = 'published');
 
--- Single Admin Model: Any authenticated user can insert articles
--- NOTE: Since there is only ever one admin account, RLS policies treat "any authenticated user" as "the admin" for now.
+-- Single Admin Model: Any authenticated user can insert/update articles
 create policy "Admin can insert articles"
   on articles for insert
   to authenticated
   with check (true);
 
--- Single Admin Model: Any authenticated user can update articles
 create policy "Admin can update articles"
   on articles for update
   to authenticated
@@ -86,7 +98,8 @@ values
   ('कृषी', 'agriculture'),
   ('संवाद', 'interviews'),
   ('व्हिडिओ', 'videos'),
-  ('विशेष', 'special')
+  ('विशेष', 'special'),
+  ('ग्लोबल', 'global')
 on conflict (slug) do update set name = excluded.name;
 ```
 
@@ -94,28 +107,18 @@ on conflict (slug) do update set name = excluded.name;
 
 ## 3. Disable Public Sign-ups & Create Admin User
 
-Because there is **no public user signup** or public user login:
-
 1. Go to **Authentication** -> **Providers** -> **Email** in the Supabase Dashboard.
-2. Toggle off **"Allow new users to sign up"** (Disable public signups).
+2. Toggle off **"Allow new users to sign up"**.
 3. Go to **Authentication** -> **Users**.
 4. Click **"Add user"** -> **"Create user"**.
 5. Enter the Admin Email ID and a strong Password. Click **"Create user"**.
-6. Use these credentials to sign in at `/admin/login` in the application.
 
 ---
 
-## 4. Cloudflare R2 Bucket Setup (Direct Storage)
+## 4. Cloudflare R2 Bucket Setup
 
-Follow these steps in the [Cloudflare Dashboard](https://dash.cloudflare.com/):
-
-1. **Create Bucket**:
-   - Go to **R2** -> **Overview** -> **Create bucket**.
-   - Bucket Name: `news-media`
-
-2. **Configure CORS Rules**:
-   - Navigate to **R2** -> **news-media** -> **Settings** -> **CORS Policy**.
-   - Add the following CORS rule to allow direct browser `PUT` and `GET` requests from your frontend origins:
+1. **Create Bucket**: Name: `news-media`.
+2. **CORS Rules**: Under bucket **Settings** -> **CORS Policy**:
    ```json
    [
      {
@@ -130,28 +133,16 @@ Follow these steps in the [Cloudflare Dashboard](https://dash.cloudflare.com/):
      }
    ]
    ```
-
-3. **Enable Public Access**:
-   - Under bucket **Settings** -> **Public Access**, enable **R2.dev Subdomain** (e.g. `https://pub-xxxxxxxx.r2.dev`) or connect your custom domain.
-   - Copy this base URL — it will serve as your `R2_PUBLIC_BASE_URL`.
-
-4. **Generate R2 API Credentials**:
-   - Go to **R2** -> **Manage R2 API Tokens** -> **Create API Token**.
-   - Permissions: **Object Read & Write**, scoped to bucket `news-media`.
-   - Copy the generated:
-     - Account ID (found on the main R2 Overview page right-hand sidebar)
-     - Access Key ID
-     - Secret Access Key
+3. **Public Subdomain**: Enable **R2.dev Subdomain** or connect your custom domain.
+4. **API Token**: Create token with **Object Read & Write** permissions for bucket `news-media`.
 
 ---
 
 ## 5. Supabase Edge Function Setup (`generate-upload-url`)
 
-The application uses a Supabase Edge Function to generate short-lived (5-minute) S3 presigned `PUT` URLs so browser clients upload files directly to Cloudflare R2 without passing file streams through Supabase.
-
 ### Set Edge Function Secrets
 
-Run the following commands using the [Supabase CLI](https://supabase.com/docs/guides/cli) or set them under **Project Settings** -> **Functions** in the Supabase Dashboard:
+Run the following commands using the Supabase CLI or under **Project Settings** -> **Functions**:
 
 ```bash
 supabase secrets set R2_ACCOUNT_ID="your_cloudflare_account_id"
@@ -159,11 +150,12 @@ supabase secrets set R2_ACCESS_KEY_ID="your_r2_access_key_id"
 supabase secrets set R2_SECRET_ACCESS_KEY="your_r2_secret_access_key"
 supabase secrets set R2_BUCKET_NAME="news-media"
 supabase secrets set R2_PUBLIC_BASE_URL="https://pub-xxxxxxxx.r2.dev"
+
+# Step 3: R2 Storage Safety Ceiling Secret (Default: 8GB = 8589934592 bytes)
+supabase secrets set R2_STORAGE_CEILING_BYTES="8589934592"
 ```
 
 ### Deploy the Edge Function
-
-Deploy the function to your Supabase project:
 
 ```bash
 supabase functions deploy generate-upload-url
@@ -171,10 +163,41 @@ supabase functions deploy generate-upload-url
 
 ---
 
-## 6. Verification Checklist
+## 6. R2 Free-Tier Safety Ceiling & Usage Alerts (Step 3)
 
+### 6.1 Self-Enforced Ceiling (In-Code Enforcement)
+
+- The `generate-upload-url` Edge Function checks `storage_usage_cache`.
+- Every 15 minutes, it uses S3 `ListObjectsV2Command` (paginating through all pages) to sum the exact byte usage of the bucket and updates `storage_usage_cache`.
+- If `cachedTotalBytes + incomingFileSize > R2_STORAGE_CEILING_BYTES` (default 8GB, leaving 2GB headroom under 10GB free limit), the function returns a `403` HTTP response with `{ "error": "storage_limit_reached" }`.
+- The upload modal in the admin panel detects `storage_limit_reached`, halts the entire submission loop, and displays a friendly alert message to the site administrator.
+
+### 6.2 Tuning the Ceiling
+
+To raise or lower the ceiling (e.g. if upgrading to a paid tier), update the secret without changing code:
+
+```bash
+npx supabase secrets set R2_STORAGE_CEILING_BYTES="16106127360" --project-ref <your-project-ref>
+```
+
+### 6.3 Early Warning Usage Alerts (Cloudflare Dashboard Setup)
+
+> **Note:** This is an early-warning layer only. The Edge Function in-code check is what actively prevents overage; this notification ensures human administrators receive advance warning.
+
+1. Log in to the [Cloudflare Dashboard](https://dash.cloudflare.com/).
+2. Navigate to **Notifications** (under account settings).
+3. Click **Add** / **Create Notification**.
+4. Select the notification category for **R2 Storage Usage** or **Billing Alerts**.
+5. Set the threshold to 70%–80% of 10GB (e.g., 7GB or 8GB).
+6. Add the administrator email address to receive early warning alerts.
+
+---
+
+## 7. Verification Checklist
+
+- [x] **`npm run build` succeeds** with zero errors.
 - [x] **No Credentials Leaked**: Frontend `.env` contains zero R2 keys. R2 keys are stored solely in Edge Function secrets.
-- [x] **Authenticated Function**: Edge Function checks the caller's JWT token via `supabase.auth.getUser()`. Returns `401 Unauthorized` if unauthenticated.
-- [x] **Direct Upload**: Browser requests `uploadUrl` from Edge Function and `PUT`s file directly to Cloudflare R2.
-- [x] **Database Link**: Uploaded files populate `articles.media_urls` as an array of R2 public URLs.
-- [x] **Legacy Storage Retired**: Code path no longer writes to `news-media-temp` Supabase Storage bucket.
+- [x] **Ceiling Enforcement**: If storage projected total exceeds `R2_STORAGE_CEILING_BYTES`, function rejects presigned URL request with `storage_limit_reached` (403).
+- [x] **Frontend Abort**: Upload modal halts submission loop on `storage_limit_reached` and alerts admin.
+- [x] **Paginated Recalculation**: Cache refreshes every 15 minutes via `ListObjectsV2Command`.
+- [x] **Documented Setup**: `SETUP.md` contains full instructions for Edge Function secrets and Cloudflare dashboard notification alerts.

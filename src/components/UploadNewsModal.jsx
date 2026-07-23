@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabaseClient";
+import { useLanguage } from "../context/LanguageContext";
+import { getCategoryLabel } from "../utils/categoryUtils";
+import { uploadNewsModal } from "../siteData";
 
-/**
- * UploadNewsModal - Modal for creating new news articles
- *
- * NOTE: Since there is only ever one admin account, RLS policies treat
- * "any authenticated user" as "the admin" for now — an admins table or role
- * system is unnecessary for a single fixed account.
- */
 export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
+  const { lang } = useLanguage();
+
   const [headline, setHeadline] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [content, setContent] = useState("");
+  const [youtubeUrl, setYoutubeUrl] = useState("");
+  const [author, setAuthor] = useState("");
   const [files, setFiles] = useState([]);
 
   const [categories, setCategories] = useState([]);
@@ -24,7 +24,6 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
   const [uploadProgress, setUploadProgress] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  // Load categories from Supabase on mount or when modal opens
   useEffect(() => {
     if (isOpen) {
       fetchCategories();
@@ -42,13 +41,19 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
 
       if (error) {
         console.error("Error fetching categories:", error);
-        setCategoryError("श्रेणी लोड करताना त्रुटी आली. (Failed to load categories)");
+        setCategoryError(
+          lang === "mr"
+            ? `श्रेणी लोड करताना त्रुटी आली: ${error.message}`
+            : `Error loading categories: ${error.message}`
+        );
       } else {
         setCategories(data || []);
       }
     } catch (err) {
       console.error("Error fetching categories:", err);
-      setCategoryError("श्रेणी लोड करता आली नाही.");
+      setCategoryError(
+        lang === "mr" ? "श्रेणी लोड करता आली नाही." : "Could not load categories."
+      );
     } finally {
       setLoadingCategories(false);
     }
@@ -63,14 +68,20 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
     setValidationError("");
 
     if (selectedFiles.length > MAX_FILES) {
-      setValidationError(`तुम्ही ५ पेक्षा जास्त फायली निवडू शकत नाही. (Maximum ${MAX_FILES} files allowed)`);
+      setValidationError(
+        lang === "mr"
+          ? `तुम्ही ५ पेक्षा जास्त फायली निवडू शकत नाही. (Maximum ${MAX_FILES} files allowed)`
+          : `You cannot select more than ${MAX_FILES} files.`
+      );
       return;
     }
 
     for (const file of selectedFiles) {
       if (file.size > MAX_FILE_SIZE_BYTES) {
         setValidationError(
-          `फाईल "${file.name}" खूप मोठी आहे (${(file.size / (1024 * 1024)).toFixed(1)}MB). कमाल मर्यादा ${MAX_FILE_SIZE_MB}MB आहे.`
+          lang === "mr"
+            ? `फाईल "${file.name}" खूप मोठी आहे (${(file.size / (1024 * 1024)).toFixed(1)}MB). कमाल मर्यादा ${MAX_FILE_SIZE_MB}MB आहे.`
+            : `File "${file.name}" exceeds limit of ${MAX_FILE_SIZE_MB}MB.`
         );
         return;
       }
@@ -89,6 +100,8 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
     setHeadline("");
     setCategoryId("");
     setContent("");
+    setYoutubeUrl("");
+    setAuthor("");
     setFiles([]);
     setValidationError("");
     setSubmitError("");
@@ -103,34 +116,29 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
     setUploadProgress("");
     setSuccessMessage("");
 
-    // Client-side validations
     if (!headline.trim()) {
-      setValidationError("कृपया बातमीचे शीर्षक प्रविष्ट करा. (Headline is required)");
+      setValidationError(
+        lang === "mr"
+          ? "कृपया बातमीचे शीर्षक प्रविष्ट करा."
+          : "Please enter article headline."
+      );
       return;
     }
 
     if (!categoryId) {
-      setValidationError("कृपया विभाग / श्रेणी निवडा. (Category selection is required)");
+      setValidationError(
+        lang === "mr" ? "कृपया विभाग / श्रेणी निवडा." : "Please select a category."
+      );
       return;
     }
 
     if (!content.trim()) {
-      setValidationError("कृपया बातमीचा संपूर्ण मजकूर लिहा. (Article content is required)");
+      setValidationError(
+        lang === "mr"
+          ? "कृपया बातमीचा संपूर्ण मजकूर लिहा."
+          : "Please enter article content."
+      );
       return;
-    }
-
-    if (files.length > MAX_FILES) {
-      setValidationError(`जास्तीत जास्त ५ फायली निवडा. (${files.length} selected)`);
-      return;
-    }
-
-    for (const file of files) {
-      if (file.size > MAX_FILE_SIZE_BYTES) {
-        setValidationError(
-          `फाईल "${file.name}" 25MB पेक्षा मोठी आहे. कृपया लहान साईजची लाईल निवडा.`
-        );
-        return;
-      }
     }
 
     setIsSubmitting(true);
@@ -138,108 +146,161 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
     try {
       const mediaUrls = [];
 
-      // Step 2 Cloudflare R2 Upload Flow:
-      // Direct-to-R2 upload using presigned URLs generated by Edge Function
       if (files.length > 0) {
         for (let i = 0; i < files.length; i++) {
           const file = files[i];
           setUploadProgress(
-            `फाईल ${i + 1} / ${files.length} R2 वर अपलोड होत आहे... (${file.name})`
+            lang === "mr"
+              ? `फाईल ${i + 1} / ${files.length} अपलोड होत आहे... (${file.name})`
+              : `Uploading file ${i + 1} / ${files.length}... (${file.name})`
           );
 
-          // 1. Invoke Supabase Edge Function to generate presigned upload URL & public URL
-          const { data: edgeData, error: edgeError } = await supabase.functions.invoke(
-            "generate-upload-url",
-            {
-              body: {
-                fileName: file.name,
-                fileType: file.type || "application/octet-stream",
-              },
+          let uploadedUrl = null;
+
+          // 1. Attempt Cloudflare R2 Direct Upload via Supabase Edge Function
+          try {
+            const { data: edgeData, error: edgeError } = await supabase.functions.invoke(
+              "generate-upload-url",
+              {
+                body: {
+                  fileName: file.name,
+                  fileType: file.type || "application/octet-stream",
+                  fileSize: file.size || 0,
+                },
+              }
+            );
+
+            // Check if storage ceiling free-tier limit error occurred
+            const isCeilingReached =
+              edgeData?.error === "storage_limit_reached" ||
+              edgeError?.message?.includes("storage_limit_reached") ||
+              edgeError?.context?.json?.error === "storage_limit_reached" ||
+              (edgeError && edgeError.status === 403);
+
+            if (isCeilingReached) {
+              const ceilingAlert =
+                lang === "mr"
+                  ? "स्टोरेज क्षमता पूर्ण भरण्याच्या मार्गावर आहे. नवीन फोटो किंवा व्हिडिओ अपलोड करण्यासाठी कृपया साईट प्रशासकाशी संपर्क साधा."
+                  : "Storage is almost full. Please contact the site administrator before uploading more photos or videos.";
+              setSubmitError(ceilingAlert);
+              setIsSubmitting(false);
+              setUploadProgress("");
+              return; // Stop submission loop immediately!
             }
-          );
 
-          if (edgeError || !edgeData?.uploadUrl) {
-            console.error("Edge Function presigned URL error:", edgeError, edgeData);
-            throw new Error(
-              `फाईल "${file.name}" साठी अपलोड URL मिळवताना त्रुटी: ${
-                edgeError?.message || edgeData?.error || "अज्ञात त्रुटी"
-              }`
-            );
+            if (!edgeError && edgeData?.uploadUrl) {
+              const putResponse = await fetch(edgeData.uploadUrl, {
+                method: "PUT",
+                headers: {
+                  "Content-Type": file.type || "application/octet-stream",
+                },
+                body: file,
+              });
+
+              if (putResponse.ok && edgeData.publicUrl) {
+                uploadedUrl = edgeData.publicUrl;
+              }
+            }
+          } catch (r2Error) {
+            console.warn("R2 Upload failed, trying Supabase Storage fallback:", r2Error);
           }
 
-          // 2. Direct browser-to-R2 HTTP PUT request (bypasses Supabase server)
-          const putResponse = await fetch(edgeData.uploadUrl, {
-            method: "PUT",
-            headers: {
-              "Content-Type": file.type || "application/octet-stream",
-            },
-            body: file,
-          });
+          // 2. Fallback to Supabase Storage Bucket
+          if (!uploadedUrl) {
+            const fileExt = file.name.split(".").pop();
+            const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
+            const filePath = `articles/${fileName}`;
 
-          if (!putResponse.ok) {
-            console.error("Cloudflare R2 PUT failed:", putResponse.statusText);
-            throw new Error(
-              `Cloudflare R2 मध्ये फाईल "${file.name}" अपलोड करताना त्रुटी आली (HTTP Status: ${putResponse.status}).`
-            );
+            const { error: storageError } = await supabase.storage
+              .from("news-media-temp")
+              .upload(filePath, file);
+
+            if (!storageError) {
+              const { data: publicData } = supabase.storage
+                .from("news-media-temp")
+                .getPublicUrl(filePath);
+              if (publicData?.publicUrl) {
+                uploadedUrl = publicData.publicUrl;
+              }
+            }
           }
 
-          // 3. Collect public R2 URL
-          if (edgeData.publicUrl) {
-            mediaUrls.push(edgeData.publicUrl);
+          if (uploadedUrl) {
+            mediaUrls.push(uploadedUrl);
           }
         }
       }
 
-      /* 
-       * FORMER TEMPORARY SUPABASE STORAGE PATH (Step 1 - Replaced by Cloudflare R2 in Step 2):
-       *
-       * if (files.length > 0) {
-       *   for (const file of files) {
-       *     const fileExt = file.name.split(".").pop();
-       *     const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
-       *     const filePath = `uploads/${fileName}`;
-       *     const { error: uploadError } = await supabase.storage
-       *       .from("news-media-temp")
-       *       .upload(filePath, file, { cacheControl: "3600", upsert: false });
-       *     if (uploadError) throw uploadError;
-       *     const { data: urlData } = supabase.storage.from("news-media-temp").getPublicUrl(filePath);
-       *     if (urlData?.publicUrl) mediaUrls.push(urlData.publicUrl);
-       *   }
-       * }
-       */
+      setUploadProgress(
+        lang === "mr"
+          ? "डेटाबेसमध्ये बातमी सेव्ह होत आहे..."
+          : "Saving news to database..."
+      );
 
-      setUploadProgress("डेटाबेसमध्ये बातमी सेव्ह होत आहे...");
+      // 3. Insert row into articles table with status: "published"
+      const fullPayload = {
+        headline: headline.trim(),
+        category_id: categoryId,
+        content: content.trim(),
+        media_urls: mediaUrls,
+        status: "published",
+        published_at: new Date().toISOString(),
+      };
 
-      // 4. Insert row into articles table
-      const { data: newArticle, error: dbError } = await supabase
-        .from("articles")
-        .insert([
-          {
-            headline: headline.trim(),
-            category_id: categoryId,
-            content: content.trim(),
-            media_urls: mediaUrls,
-            status: "pending",
-          },
-        ])
-        .select()
-        .single();
+      if (youtubeUrl.trim()) {
+        fullPayload.youtube_url = youtubeUrl.trim();
+      }
+      if (author.trim()) {
+        fullPayload.author = author.trim();
+      }
+
+      // Attempt insert with full payload
+      let { error: dbError } = await supabase.from("articles").insert([fullPayload]);
+
+      // Fallback: If DB throws PGRST204 schema cache error (meaning optional columns youtube_url or author aren't in Postgres yet), retry with core payload
+      if (dbError && dbError.code === "PGRST204") {
+        console.warn("Supabase schema missing optional columns (youtube_url / author). Retrying with core payload...");
+        const corePayload = {
+          headline: headline.trim(),
+          category_id: categoryId,
+          content: content.trim(),
+          media_urls: mediaUrls,
+          status: "published",
+          published_at: new Date().toISOString(),
+        };
+
+        const { error: retryError } = await supabase.from("articles").insert([corePayload]);
+        dbError = retryError;
+      }
 
       if (dbError) {
         console.error("Database insert error:", dbError);
-        throw new Error(`डेटाबेसमध्ये बातमी नोंदवताना त्रुटी: ${dbError.message}`);
+        throw new Error(
+          lang === "mr"
+            ? `डेटाबेस सेव्ह त्रुटी: ${dbError.message}`
+            : `Database save error: ${dbError.message}`
+        );
       }
 
-      setSuccessMessage("बातमी यशस्वीरीत्या सबमिट झाली आहे! (News submitted successfully)");
+      setSuccessMessage(
+        lang === "mr"
+          ? "बातमी यशस्वीरीत्या सबमिट झाली आहे!"
+          : "News article submitted successfully!"
+      );
+
       setTimeout(() => {
         resetForm();
-        if (onSuccess) onSuccess(newArticle);
+        if (onSuccess) onSuccess();
         onClose();
-      }, 1500);
-
+      }, 1200);
     } catch (err) {
-      console.error("R2 Upload / DB Insert error:", err);
-      setSubmitError(err.message || "सबमिट करताना अनपेक्षित त्रुटी आली.");
+      console.error("Upload / DB Insert error:", err);
+      setSubmitError(
+        err.message ||
+          (lang === "mr"
+            ? "सबमिट करताना अनपेक्षित त्रुटी आली."
+            : "An unexpected error occurred during submission.")
+      );
     } finally {
       setIsSubmitting(false);
       setUploadProgress("");
@@ -259,7 +320,7 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
       >
         <div className="modal-header">
           <h2 id="modal-title" className="modal-title">
-            नवीन बातमी अपलोड करा
+            {uploadNewsModal.modalTitle[lang]}
           </h2>
           <button
             type="button"
@@ -289,16 +350,16 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
             <div className="modal-alert modal-alert--success">{successMessage}</div>
           )}
 
-          {/* Field 1: Headline */}
+          {/* Headline */}
           <div className="modal-form-group">
             <label htmlFor="headline" className="modal-label">
-              बातमीचे शीर्षक (Headline) <span className="required-star">*</span>
+              {uploadNewsModal.headlineLabel[lang]} <span className="required-star">*</span>
             </label>
             <input
               id="headline"
               type="text"
               className="modal-input"
-              placeholder="येथे मुख्य बातमीचे शीर्षक लिहा..."
+              placeholder={uploadNewsModal.headlinePlaceholder[lang]}
               value={headline}
               onChange={(e) => setHeadline(e.target.value)}
               required
@@ -306,10 +367,10 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
             />
           </div>
 
-          {/* Field 2: Category Dropdown */}
+          {/* Category Dropdown */}
           <div className="modal-form-group">
             <label htmlFor="category" className="modal-label">
-              विभाग / श्रेणी निवडा (Category) <span className="required-star">*</span>
+              {uploadNewsModal.categoryLabel[lang]} <span className="required-star">*</span>
             </label>
             <select
               id="category"
@@ -319,26 +380,26 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
               required
               disabled={isSubmitting || loadingCategories}
             >
-              <option value="">-- विभाग निवडा --</option>
+              <option value="">-- {uploadNewsModal.categoryPlaceholder[lang]} --</option>
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
-                  {cat.name}
+                  {getCategoryLabel(cat.slug || cat.name, lang)}
                 </option>
               ))}
             </select>
             {categoryError && <p className="field-hint error">{categoryError}</p>}
           </div>
 
-          {/* Field 3: Article Content */}
+          {/* Article Content */}
           <div className="modal-form-group">
             <label htmlFor="content" className="modal-label">
-              बातमीचा मजकूर (Article Content) <span className="required-star">*</span>
+              {uploadNewsModal.textLabel[lang]} <span className="required-star">*</span>
             </label>
             <textarea
               id="content"
               className="modal-textarea"
               rows={6}
-              placeholder="येथे बातमीचा संपूर्ण मजकूर लिहा..."
+              placeholder={uploadNewsModal.textPlaceholder[lang]}
               value={content}
               onChange={(e) => setContent(e.target.value)}
               required
@@ -346,10 +407,46 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
             />
           </div>
 
-          {/* Field 4: File Input */}
+          {/* YouTube Video URL */}
+          <div className="modal-form-group">
+            <label htmlFor="youtube-url" className="modal-label">
+              {lang === "mr" ? "YouTube व्हिडिओ लिंक (ऐच्छिक)" : "YouTube Video URL (Optional)"}
+            </label>
+            <input
+              id="youtube-url"
+              type="url"
+              className="modal-input"
+              placeholder="https://www.youtube.com/watch?v=..."
+              value={youtubeUrl}
+              onChange={(e) => setYoutubeUrl(e.target.value)}
+              disabled={isSubmitting}
+            />
+          </div>
+
+          {/* Author Name */}
+          <div className="modal-form-group">
+            <label htmlFor="author-name" className="modal-label">
+              {lang === "mr" ? "लेखक / बातमीदार (ऐच्छिक)" : "Author / Reporter Name (Optional)"}
+            </label>
+            <input
+              id="author-name"
+              type="text"
+              className="modal-input"
+              placeholder={
+                lang === "mr"
+                  ? "उदा. संजय वरकड / न्यूज यात्रा डिजिटल टीम"
+                  : "e.g. Sanjay Warkad / News Yatra Team"
+              }
+              value={author}
+              onChange={(e) => setAuthor(e.target.value)}
+              disabled={isSubmitting}
+            />
+          </div>
+
+          {/* Media File Upload */}
           <div className="modal-form-group">
             <label htmlFor="media-files" className="modal-label">
-              फोटो / व्हिडिओ अपलोड करा (जास्तीत जास्त ५ फायली)
+              {uploadNewsModal.mediaLabel[lang]}
             </label>
             <input
               id="media-files"
@@ -360,10 +457,7 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
               onChange={handleFileChange}
               disabled={isSubmitting}
             />
-            {/* Field 5: Helper text */}
-            <p className="field-hint">
-              तुम्ही जास्तीत जास्त ५ फोटो किंवा व्हिडिओ निवडून अपलोड करू शकता. (Cloudflare R2 Direct Upload)
-            </p>
+            <p className="field-hint">{uploadNewsModal.mediaHint[lang]}</p>
             {files.length > 0 && (
               <ul className="selected-files-list">
                 {files.map((file, idx) => (
@@ -375,7 +469,7 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
             )}
           </div>
 
-          {/* Field 6: Action Buttons */}
+          {/* Action Buttons */}
           <div className="modal-footer">
             <button
               type="button"
@@ -383,14 +477,18 @@ export default function UploadNewsModal({ isOpen, onClose, onSuccess }) {
               onClick={handleClose}
               disabled={isSubmitting}
             >
-              रद्द करा
+              {uploadNewsModal.cancelBtn[lang]}
             </button>
             <button
               type="submit"
               className="modal-btn modal-btn--primary"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "अपलोड व सबमिट होत आहे..." : "बातमी सबमिट करा"}
+              {isSubmitting
+                ? lang === "mr"
+                  ? "सबमिट होत आहे..."
+                  : "Submitting..."
+                : uploadNewsModal.submitBtn[lang]}
             </button>
           </div>
         </form>

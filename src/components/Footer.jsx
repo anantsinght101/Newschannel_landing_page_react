@@ -4,6 +4,7 @@ import iconFacebook from "../assets/icon-social-facebook.svg";
 import iconTwitter from "../assets/icon-social-twitter.svg";
 import iconInstagram from "../assets/icon-social-instagram.svg";
 import iconYoutube from "../assets/icon-social-youtube.svg";
+import iconWhatsapp from "../assets/icon-social-whatsapp.svg";
 import FooterColumn from "./FooterColumn";
 import { footerGroups, socialLinks } from "../siteData";
 import { useLanguage } from "../context/LanguageContext";
@@ -13,6 +14,7 @@ const iconMap = {
   "icon-social-twitter": iconTwitter,
   "icon-social-instagram": iconInstagram,
   "icon-social-youtube": iconYoutube,
+  "icon-social-whatsapp": iconWhatsapp,
 };
 
 export default function Footer() {
@@ -33,7 +35,22 @@ export default function Footer() {
           </div>
         </Link>
 
+        {/* Contact info & Social links */}
         <div className="footer__social-block">
+          <div className="footer__contact-info">
+            <span className="footer__contact-label">
+              {lang === "mr" ? "संपर्क क्र. / WhatsApp:" : "Contact / WhatsApp:"}
+            </span>
+            <a
+              href="https://wa.me/919764444001"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer__contact-phone"
+            >
+              📞 9764444001
+            </a>
+          </div>
+
           <span className="footer__follow-label">
             {lang === "mr" ? "आमच्याशी जोडा" : "FOLLOW US"}
           </span>
@@ -74,8 +91,13 @@ export default function Footer() {
             ? "न्यूज यात्रा. सर्व हक्क सुरक्षित."
             : "News Yatra. All Rights Reserved."}
         </span>
-        <a href="https://example.com" target="_blank" rel="noopener noreferrer">
-          Powered by Digital News Network
+        <a
+          href="https://wa.me/919764444001"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="footer__phone-link"
+        >
+          {lang === "mr" ? "संपर्क: ९७६४४४४००१" : "Contact: 9764444001"}
         </a>
       </div>
     </footer>

@@ -5,17 +5,17 @@ import MobileHero from "../../components/MobileHero";
 import MobileNewsGrid from "../../components/MobileNewsGrid";
 import MobileFooter from "../../components/MobileFooter";
 
-export default function MobileLayout() {
+export default function MobileLayout({ children }) {
   return (
     <div className="mobile-layout">
       <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
 
-      {/* Mobile Navbar (~60px height, logo 110-140px, hamburger drawer) */}
+      {/* Mobile Navbar */}
       <MobileNavbar />
 
-      {/* Breaking News Ticker (38-42px height, 14-15px font) */}
+      {/* Breaking News Ticker */}
       <div className="mobile-ticker-wrapper">
         <BreakingTicker />
       </div>
@@ -25,14 +25,17 @@ export default function MobileLayout() {
 
       {/* Main Content Area */}
       <main id="main-content" className="mobile-main">
-        {/* Stacked 1-Column Hero Section */}
-        <MobileHero />
-
-        {/* 1-Column News Grid */}
-        <MobileNewsGrid />
+        {children ? (
+          children
+        ) : (
+          <>
+            <MobileHero />
+            <MobileNewsGrid />
+          </>
+        )}
       </main>
 
-      {/* Centered Vertically Stacked Mobile Footer */}
+      {/* Centered Mobile Footer */}
       <MobileFooter />
     </div>
   );
