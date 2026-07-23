@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import heroBanner from "../assets/hero-banner.png";
 import { heroContent } from "../siteData";
 import { useLanguage } from "../context/LanguageContext";
@@ -36,9 +37,9 @@ export default function MobileHero() {
           {/* Summary 2 lines max */}
           <p className="mobile-hero__subtitle">{content.subtitle}</p>
 
-          <button type="button" className="mobile-hero__btn">
+          <Link to="/categories" className="mobile-hero__btn">
             {content.readMore}
-          </button>
+          </Link>
         </div>
       </div>
     </section>

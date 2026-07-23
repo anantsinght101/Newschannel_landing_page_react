@@ -83,7 +83,12 @@ export default function Contact() {
           </a>
 
           {/* Email / Gmail */}
-          <a href={`mailto:${contactDetails.email}`} className="contact-card contact-card--gmail">
+          <a
+            href={contactDetails.gmailWeb || `https://mail.google.com/mail/?view=cm&fs=1&to=${contactDetails.email}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="contact-card contact-card--gmail"
+          >
             <div className="contact-card__icon-wrapper">
               <img src={iconGmail} alt="Gmail" width="28" height="28" />
             </div>
@@ -146,7 +151,7 @@ export default function Contact() {
           </a>
         </section>
 
-        {/* Contact & News Tip Form */}
+        {/* Contact & News Tip Form (Disabled / Commented out for now)
         <section className="contact-form-container">
           <div className="contact-form__header">
             <h2>{lang === "mr" ? "संदेश पाठवा किंवा बातमी सुचवा" : "Send Us a Message or News Tip"}</h2>
@@ -233,6 +238,7 @@ export default function Contact() {
             </form>
           )}
         </section>
+        */}
       </div>
     </main>
   );

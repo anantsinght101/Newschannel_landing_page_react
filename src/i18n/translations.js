@@ -124,6 +124,14 @@ export const translations = {
   headline: { mr: "शीर्षक", en: "Headline" },
   status: { mr: "स्थिती", en: "Status" },
   articleId: { mr: "बातमी आयडी", en: "Article ID" },
+  publishedArticlesTitle: { mr: "सर्व प्रकाशित बातम्या", en: "All Published Articles" },
+  noArticlesFound: { mr: "कोणतीही बातमी सापडली नाही.", en: "No published articles found." },
+  deleteArticleBtn: { mr: "हटवा", en: "Delete" },
+  confirmDeleteText: { mr: "तुम्हाला खरोखर ही बातमी हटवायची आहे का? ही कारवाई मागे घेतली जाऊ शकत नाही.", en: "Are you sure you want to delete this article? This action cannot be undone." },
+  articleDeletedSuccess: { mr: "बातमी यशस्वीरीत्या हटवली गेली!", en: "Article deleted successfully!" },
+  deleteError: { mr: "बातमी हटवताना त्रुटी आली: ", en: "Error deleting article: " },
+  searchArticlesPlaceholder: { mr: "बातमीचे शीर्षक किंवा श्रेणी शोधा...", en: "Search by headline or category..." },
+  viewArticleBtn: { mr: "पाहा", en: "View" },
 
   // Upload News Modal (`UploadNewsModal.jsx`)
   modalTitle: { mr: "नवीन बातमी अपलोड करा", en: "Upload New News Article" },

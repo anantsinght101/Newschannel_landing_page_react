@@ -27,7 +27,7 @@ const categoryRoutes = [
   "tech",
   "agriculture",
   "interviews",
-  "videos",
+  "others",
   "special",
   "global",
 ];

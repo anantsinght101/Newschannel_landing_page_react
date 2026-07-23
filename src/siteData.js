@@ -10,7 +10,7 @@ export const navLinks = [
   { to: "/tech", label: { mr: "तंत्रज्ञान", en: "Technology" } },
   { to: "/agriculture", label: { mr: "कृषी", en: "Agriculture" } },
   { to: "/interviews", label: { mr: "संवाद", en: "Interviews" } },
-  { to: "/videos", label: { mr: "व्हिडिओ", en: "Videos" } },
+  { to: "/others", label: { mr: "इतर", en: "Others" } },
   { to: "/special", label: { mr: "विशेष", en: "Special" } },
   { to: "/global", label: { mr: "ग्लोबल", en: "Global" } },
 ];
@@ -18,7 +18,7 @@ export const navLinks = [
 export const utilityLinks = [
   { to: "/about", label: { mr: "आमच्याबद्दल", en: "About Us" } },
   { to: "/contact", label: { mr: "संपर्क", en: "Contact" } },
-  { to: "/epaper", label: { mr: "ई-पेपर", en: "E-Paper" } },
+  // { to: "/epaper", label: { mr: "ई-पेपर", en: "E-Paper" } },
   { to: "/admin/login", label: { mr: "अ‍ॅडमिन लॉगिन", en: "Admin Login" } },
 ];
 
@@ -27,7 +27,7 @@ export const topBarSocialLinks = [
   { label: "YouTube", to: "https://www.youtube.com/@NewsYatraS", icon: "icon-social-youtube" },
   { label: "WhatsApp", to: "https://wa.me/919764444001", icon: "icon-social-whatsapp" },
   { label: "Facebook", to: "https://facebook.com/share/15xr17qULk", icon: "icon-social-facebook" },
-  { label: "Gmail", to: "mailto:newsyatra01@gmail.com", icon: "icon-social-gmail" },
+  { label: "Gmail", to: "https://mail.google.com/mail/?view=cm&fs=1&to=newsyatra01@gmail.com", icon: "icon-social-gmail" },
 ];
 
 export const contactDetails = {
@@ -35,6 +35,7 @@ export const contactDetails = {
   phoneFormatted: "+91 9764444001",
   whatsapp: "https://wa.me/919764444001",
   email: "newsyatra01@gmail.com",
+  gmailWeb: "https://mail.google.com/mail/?view=cm&fs=1&to=newsyatra01@gmail.com",
   instagram: "https://instagram.com/newsyatra2025",
   facebook: "https://facebook.com/share/15xr17qULk",
   youtube: "https://www.youtube.com/@NewsYatraS",
@@ -96,7 +97,7 @@ export const footerGroups = [
     links: [
       { label: { mr: "विशेष मुलाखती", en: "Exclusive Interviews" }, to: "/interviews" },
       { label: { mr: "शोधात्मक पत्रकारिता", en: "Investigative Reports" }, to: "/special" },
-      { label: { mr: "व्हिडिओ बातम्या", en: "Video Coverage" }, to: "/videos" },
+      { label: { mr: "इतर बातम्या", en: "Others" }, to: "/others" },
     ],
   },
   {
@@ -111,7 +112,7 @@ export const footerGroups = [
   {
     heading: { mr: "सेवा", en: "Services" },
     links: [
-      { label: { mr: "ई-पेपर", en: "Digital E-Paper" }, to: "/epaper" },
+      // { label: { mr: "ई-पेपर", en: "Digital E-Paper" }, to: "/epaper" },
       { label: { mr: "लाइव्ह टीव्ही", en: "Live TV Stream" }, to: "/livetv" },
       { label: { mr: "न्यूजलेटर", en: "Newsletter" }, to: "/newsletter" },
     ],
@@ -123,7 +124,7 @@ export const socialLinks = [
   { label: "YouTube", to: "https://www.youtube.com/@NewsYatraS", icon: "icon-social-youtube" },
   { label: "WhatsApp", to: "https://wa.me/919764444001", icon: "icon-social-whatsapp" },
   { label: "Facebook", to: "https://facebook.com/share/15xr17qULk", icon: "icon-social-facebook" },
-  { label: "Gmail", to: "mailto:newsyatra01@gmail.com", icon: "icon-social-gmail" },
+  { label: "Gmail", to: "https://mail.google.com/mail/?view=cm&fs=1&to=newsyatra01@gmail.com", icon: "icon-social-gmail" },
 ];
 
 export const uploadNewsModal = {

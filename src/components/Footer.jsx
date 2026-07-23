@@ -44,7 +44,9 @@ export default function Footer() {
               📞 9764444001
             </a>
             <a
-              href="mailto:newsyatra01@gmail.com"
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=newsyatra01@gmail.com"
+              target="_blank"
+              rel="noopener noreferrer"
               className="footer__contact-email"
             >
               ✉️ newsyatra01@gmail.com
