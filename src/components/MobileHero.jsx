@@ -1,4 +1,4 @@
-import heroBanner from "../assets/hero-banner.jpg";
+import heroBanner from "../assets/hero-banner.png";
 import { heroContent } from "../siteData";
 import { useLanguage } from "../context/LanguageContext";
 

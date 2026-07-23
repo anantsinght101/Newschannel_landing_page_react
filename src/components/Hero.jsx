@@ -1,4 +1,4 @@
-import heroBanner from "../assets/hero-banner.jpg";
+import heroBanner from "../assets/hero-banner.png";
 import { useLanguage } from "../context/LanguageContext";
 
 export default function Hero() {
