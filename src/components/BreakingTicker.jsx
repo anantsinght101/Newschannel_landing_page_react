@@ -29,21 +29,17 @@ export default function BreakingTicker() {
         }));
         setHeadlines(headlineItems);
       } else {
-        setHeadlines([
-          {
-            id: "default-1",
-            text:
-              lang === "mr"
-                ? "न्यूज यात्रा वर ताजी आणि सविस्तर माहिती पाहा..."
-                : "Watch live updates and in-depth news on News Yatra...",
-            to: "/",
-          },
-        ]);
+        setHeadlines([]);
       }
     } catch (err) {
       console.error("Error fetching breaking headlines:", err);
+      setHeadlines([]);
     }
   };
+
+  if (headlines.length === 0) {
+    return null;
+  }
 
   return (
     <div className="ticker" aria-label={t("breakingNews")}>
