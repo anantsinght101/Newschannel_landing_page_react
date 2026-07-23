@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import CategoryPage from "./pages/CategoryPage";
 import CategoriesOverview from "./pages/CategoriesOverview";
 import ArticleDetail from "./pages/ArticleDetail";
+import Contact from "./pages/Contact";
 import PlaceholderPage from "./pages/PlaceholderPage";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -67,6 +68,9 @@ export default function App() {
 
                   {/* Task 6: Categories Overview Page */}
                   <Route path="/categories" element={<CategoriesOverview />} />
+
+                  {/* Contact Us Page */}
+                  <Route path="/contact" element={<Contact />} />
 
                   {/* Individual Article Page */}
                   <Route path="/article/:id" element={<ArticleDetail />} />

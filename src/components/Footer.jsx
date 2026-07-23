@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import logo from "../assets/logo.jpg";
 import iconFacebook from "../assets/icon-social-facebook.svg";
-import iconTwitter from "../assets/icon-social-twitter.svg";
+import iconGmail from "../assets/icon-social-gmail.svg";
 import iconInstagram from "../assets/icon-social-instagram.svg";
 import iconYoutube from "../assets/icon-social-youtube.svg";
 import iconWhatsapp from "../assets/icon-social-whatsapp.svg";
@@ -11,7 +11,7 @@ import { useLanguage } from "../context/LanguageContext";
 
 const iconMap = {
   "icon-social-facebook": iconFacebook,
-  "icon-social-twitter": iconTwitter,
+  "icon-social-gmail": iconGmail,
   "icon-social-instagram": iconInstagram,
   "icon-social-youtube": iconYoutube,
   "icon-social-whatsapp": iconWhatsapp,
@@ -42,6 +42,12 @@ export default function Footer() {
               className="footer__contact-phone"
             >
               📞 9764444001
+            </a>
+            <a
+              href="mailto:newsyatra01@gmail.com"
+              className="footer__contact-email"
+            >
+              ✉️ newsyatra01@gmail.com
             </a>
           </div>
 

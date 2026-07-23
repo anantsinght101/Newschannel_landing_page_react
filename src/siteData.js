@@ -26,9 +26,19 @@ export const topBarSocialLinks = [
   { label: "Instagram", to: "https://instagram.com/newsyatra2025", icon: "icon-social-instagram" },
   { label: "YouTube", to: "https://www.youtube.com/@NewsYatraS", icon: "icon-social-youtube" },
   { label: "WhatsApp", to: "https://wa.me/919764444001", icon: "icon-social-whatsapp" },
-  { label: "Facebook", to: "https://facebook.com", icon: "icon-social-facebook" },
-  { label: "Twitter", to: "https://twitter.com", icon: "icon-social-twitter" },
+  { label: "Facebook", to: "https://facebook.com/share/15xr17qULk", icon: "icon-social-facebook" },
+  { label: "Gmail", to: "mailto:newsyatra01@gmail.com", icon: "icon-social-gmail" },
 ];
+
+export const contactDetails = {
+  phone: "9764444001",
+  phoneFormatted: "+91 9764444001",
+  whatsapp: "https://wa.me/919764444001",
+  email: "newsyatra01@gmail.com",
+  instagram: "https://instagram.com/newsyatra2025",
+  facebook: "https://facebook.com/share/15xr17qULk",
+  youtube: "https://www.youtube.com/@NewsYatraS",
+};
 
 export const breakingNews = {
   mr: [],
@@ -112,7 +122,8 @@ export const socialLinks = [
   { label: "Instagram", to: "https://instagram.com/newsyatra2025", icon: "icon-social-instagram" },
   { label: "YouTube", to: "https://www.youtube.com/@NewsYatraS", icon: "icon-social-youtube" },
   { label: "WhatsApp", to: "https://wa.me/919764444001", icon: "icon-social-whatsapp" },
-  { label: "Facebook", to: "https://facebook.com", icon: "icon-social-facebook" },
+  { label: "Facebook", to: "https://facebook.com/share/15xr17qULk", icon: "icon-social-facebook" },
+  { label: "Gmail", to: "mailto:newsyatra01@gmail.com", icon: "icon-social-gmail" },
 ];
 
 export const uploadNewsModal = {
