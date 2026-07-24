@@ -52,24 +52,22 @@ export default function CategoriesOverview() {
             ? dbArticles.find((art) => art.category_id === cat.id)
             : null;
 
-          categoryCards.push({
-            id: cat.id,
-            slug: cat.slug,
-            categoryName: getCategoryLabel(cat.slug, lang),
-            articleId: latestArt?.id || null,
-            title: latestArt ? latestArt.headline : getCategoryLabel(cat.slug, lang),
-            excerpt: latestArt
-              ? (latestArt.content ? latestArt.content.substring(0, 140) + "..." : "")
-              : (lang === "mr"
-                  ? `${getCategoryLabel(cat.slug, "mr")} विभागातील ताज्या आणि महत्त्वपूर्ण बातम्या पाहण्यासाठी येथे क्लिक करा.`
-                  : `Explore latest news and updates from ${getCategoryLabel(cat.slug, "en")}.`),
-            image:
-              latestArt && latestArt.media_urls && latestArt.media_urls.length > 0
-                ? latestArt.media_urls[0]
-                : fallbackThumbnails[idx % fallbackThumbnails.length],
-            publishedAt: latestArt ? (latestArt.published_at || latestArt.created_at) : null,
-            to: `/${cat.slug}`,
-          });
+          if (latestArt) {
+            categoryCards.push({
+              id: cat.id,
+              slug: cat.slug,
+              categoryName: getCategoryLabel(cat.slug, lang),
+              articleId: latestArt.id,
+              title: latestArt.headline,
+              excerpt: latestArt.content ? latestArt.content.substring(0, 140) + "..." : "",
+              image:
+                latestArt.media_urls && latestArt.media_urls.length > 0
+                  ? latestArt.media_urls[0]
+                  : fallbackThumbnails[idx % fallbackThumbnails.length],
+              publishedAt: latestArt.published_at || latestArt.created_at,
+              to: `/${cat.slug}`,
+            });
+          }
         });
       }
 
